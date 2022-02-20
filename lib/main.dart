@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:sabertech_proctor/utils/theme_data.dart';
 import 'package:flutter/material.dart';
-
+import 'package:sabertech_proctor/screens/user_page.dart';
 import 'screens/home_page.dart';
 
 void main() async {
@@ -52,6 +52,9 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: HomePage(),
+      routes: {
+        '/table': (context) => SortablePage()
+      },
     );
   }
 }
