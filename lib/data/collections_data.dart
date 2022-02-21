@@ -39,12 +39,14 @@ void getUsers() async {
     // Access Firestore using the default Firebase app:
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  firestore
+  final List users = [];
+  return firestore
     .collection('db-test1')
+    .limit(10)
     .get()
     .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-            print(doc["user_id"]);
+        return querySnapshot.docs.forEach((doc) {
+            users.add(doc["user_id"])
         });
     });
 }
