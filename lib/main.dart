@@ -1,5 +1,6 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:sabertech_proctor/screens/projects_data.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:sabertech_proctor/utils/theme_data.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,8 @@ class _MyAppState extends State<MyApp> {
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: HomePage(),
       routes: {
-        '/table': (context) => SortablePage()
+        '/table': (context) => SortablePage(),
+        '/project': (context) => GetProject()
       },
     );
   }
