@@ -54,27 +54,53 @@ class GetProject extends StatelessWidget{
       }).toList();
 
   Widget buildDataTable(projectData) {
-    final columns = ['First Name', 'Last Name', 'Age'];
+    final columns = ['Project Name', 'Status', 'Duration'];
     return DataTable(
       columns: getColumns(columns),
       rows: getRows(projectData)
     );
   }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Header")
-      ),
-      body: FutureBuilder(
-        future: getProject(),
-        builder: (BuildContext context, snapshot){
-          if(snapshot.hasData){
-            return buildDataTable(snapshot.data);
-          } else{
-            return Text("Loading data");
-          }
-        },
-        ),
-    );
+    return DefaultTabController(
+  length: 2,
+  child: MaterialApp(
+    home: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              onTap: (index) {
+              // Tab index when user select it, it start from zero
+              },
+              tabs: [
+                Tab(icon: Text("Upcoming Project")),
+                Tab(icon: Text("Completed Project")),
+              ],
+            ),
+            title: Text('Project Tabs'),
+          ),
+          body: TabBarView(
+            children: [
+              FutureBuilder(
+                future: getProject(),
+                builder: (BuildContext context, snapshot){
+                  if(snapshot.hasData){
+                    return buildDataTable(snapshot.data);
+                  } else{
+                    return Text("Loading data");
+                  }
+                },
+              ),
+              FutureBuilder(
+                future: getProject(),
+                builder: (BuildContext context, snapshot){
+                  if(snapshot.hasData){
+                    return buildDataTable(snapshot.data);
+                  } else{
+                    return Text("Loading data");
+                  }
+                },
+              ),
+            ],
+          ),
+        )));
   }
 }
