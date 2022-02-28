@@ -36,7 +36,7 @@ class _GoogleButtonState extends State<GoogleButton> {
           await signInWithGoogle().then((result) {
             print(result);
             if (result != null) {
-              Navigator.of(context).pop();
+              // Navigator.of(context).pop();
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   fullscreenDialog: true,

@@ -41,7 +41,7 @@ class _TopBarContentsState extends State<TopBarContents> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'EXPLORE',
+                'Sabertech',
                 style: TextStyle(
                   color: Colors.blueGrey[100],
                   fontSize: 20,
@@ -55,7 +55,8 @@ class _TopBarContentsState extends State<TopBarContents> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(width: screenSize.width / 8),
-                    InkWell(
+                    userEmail != null 
+                    ? InkWell(
                       onHover: (value) {
                         setState(() {
                           value
@@ -68,7 +69,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Discover',
+                            'History',
                             style: TextStyle(
                               color: _isHovering[0]
                                   ? Colors.blue[200]
@@ -89,9 +90,10 @@ class _TopBarContentsState extends State<TopBarContents> {
                           )
                         ],
                       ),
-                    ),
+                    ): SizedBox(),
                     SizedBox(width: screenSize.width / 20),
-                    InkWell(
+                    userEmail != null 
+                    ? InkWell(
                       onHover: (value) {
                         setState(() {
                           value
@@ -104,7 +106,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Contact Us',
+                            'Projects',
                             style: TextStyle(
                               color: _isHovering[1]
                                   ? Colors.blue[200]
@@ -125,7 +127,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                           )
                         ],
                       ),
-                    ),
+                    ): SizedBox(),
                   ],
                 ),
               ),
@@ -156,12 +158,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                       }
                     : null,
                 child: userEmail == null
-                    ? Text(
-                        'Sign in',
-                        style: TextStyle(
-                          color: _isHovering[3] ? Colors.white : Colors.white70,
-                        ),
-                      )
+                    ? SizedBox()
                     : Row(
                         children: [
                           CircleAvatar(

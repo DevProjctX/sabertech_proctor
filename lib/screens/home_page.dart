@@ -1,4 +1,6 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:sabertech_proctor/utils/authentication.dart';
+import 'package:sabertech_proctor/widgets/auth_dialog.dart';
 import 'package:sabertech_proctor/widgets/web_scrollbar.dart';
 import 'package:sabertech_proctor/widgets/bottom_bar.dart';
 import 'package:sabertech_proctor/widgets/carousel.dart';
@@ -8,6 +10,7 @@ import 'package:sabertech_proctor/widgets/featured_heading.dart';
 import 'package:sabertech_proctor/widgets/featured_tiles.dart';
 import 'package:sabertech_proctor/widgets/floating_quick_access_bar.dart';
 import 'package:sabertech_proctor/widgets/responsive.dart';
+import 'package:sabertech_proctor/screens/projects_data.dart';
 import 'package:sabertech_proctor/widgets/top_bar_contents.dart';
 import 'package:flutter/material.dart';
 
@@ -46,86 +49,65 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: ResponsiveWidget.isSmallScreen(context)
-          ? AppBar(
+      appBar: AppBar(
               backgroundColor:
                   Theme.of(context).bottomAppBarColor.withOpacity(_opacity),
-              elevation: 0,
-              centerTitle: true,
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.brightness_6),
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onPressed: () {
-                    EasyDynamicTheme.of(context).changeTheme();
-                  },
-                ),
-              ],
-              title: Text(
-                'EXPLORE',
-                style: TextStyle(
-                  color: Colors.blueGrey[100],
-                  fontSize: 20,
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 3,
-                ),
-              ),
-            )
-          : PreferredSize(
-              preferredSize: Size(screenSize.width, 1000),
-              child: TopBarContents(_opacity),
+              title: TopBarContents(_opacity),
             ),
-      drawer: ExploreDrawer(),
-      body: WebScrollbar(
-        color: Colors.blueGrey,
-        backgroundColor: Colors.blueGrey.withOpacity(0.3),
-        width: 10,
-        heightFraction: 0.3,
-        controller: _scrollController,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          physics: ClampingScrollPhysics(),
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    child: SizedBox(
-                      height: screenSize.height * 0.45,
-                      width: screenSize.width,
-                      child: Image.asset(
-                        'assets/images/cover.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      FloatingQuickAccessBar(screenSize: screenSize),
-                      Container(
-                        child: Column(
-                          children: [
-                            FeaturedHeading(
-                              screenSize: screenSize,
-                            ),
-                            FeaturedTiles(screenSize: screenSize)
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              DestinationHeading(screenSize: screenSize),
-              DestinationCarousel(),
-              SizedBox(height: screenSize.height / 10),
-              BottomBar(),
-            ],
+          // : PreferredSize(
+          //     preferredSize: Size(screenSize.width, 1000),
+          //     child: TopBarContents(_opacity),
+          //   ),
+      // drawer: ExploreDrawer(),
+      body: Center(
+            child: userEmail == null ? AuthDialog() : GetProject(),
+              // SizedBox(height: 40),
+            // ]
           ),
-        ),
-      ),
+      // WebScrollbar(
+      //   color: Colors.blueGrey,
+      //   backgroundColor: Colors.blueGrey.withOpacity(0.3),
+      //   width: 10,
+      //   heightFraction: 0.3,
+      //   controller: _scrollController,
+      //   child: SingleChildScrollView(
+      //     controller: _scrollController,
+      //     physics: ClampingScrollPhysics(),
+      //     child: Column(
+      //       children: [
+      //         // SizedBox(height: 40),
+      //         // AuthDialog(),
+      //         SizedBox(height: 40),
+      //         Stack(
+      //           children: [
+      //             Container(
+      //               child: AuthDialog(),
+      //             ),
+      //             Column(
+      //               children: [
+      //                 FloatingQuickAccessBar(screenSize: screenSize),
+      //                 Container(
+      //                   child: Column(
+      //                     children: [
+      //                       FeaturedHeading(
+      //                         screenSize: screenSize,
+      //                       ),
+      //                       FeaturedTiles(screenSize: screenSize)
+      //                     ],
+      //                   ),
+      //                 ),
+      //               ],
+      //             )
+      //           ],
+      //         ),
+      //         // DestinationHeading(screenSize: screenSize),
+      //         // DestinationCarousel(),
+      //         SizedBox(height: screenSize.height / 10),
+      //         // BottomBar(),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

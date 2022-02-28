@@ -66,11 +66,11 @@ class _AuthDialogState extends State<AuthDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Theme.of(context).backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+    return Container(
+      // backgroundColor: Theme.of(context).backgroundColor,
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(8.0),
+      // ),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -83,7 +83,7 @@ class _AuthDialogState extends State<AuthDialog> {
               children: [
                 Center(
                   child: Text(
-                    'EXPLORE',
+                    'Sabertech Login',
                     style: TextStyle(
                       color: Theme.of(context).textTheme.headline1!.color,
                       fontSize: 24,
@@ -262,7 +262,7 @@ class _AuthDialogState extends State<AuthDialog> {
                                     });
                                     Future.delayed(Duration(milliseconds: 500),
                                         () {
-                                      Navigator.of(context).pop();
+                                      // Navigator.of(context).pop();
                                       Navigator.of(context)
                                           .pushReplacement(MaterialPageRoute(
                                         fullscreenDialog: true,
