@@ -1,7 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sabertech_proctor/data/projects.dart';
 import 'package:sabertech_proctor/models/project.dart';
 
 class GetProject extends StatelessWidget{
@@ -61,7 +60,7 @@ class GetProject extends StatelessWidget{
     );
   }
 
-    return DefaultTabController(
+  return DefaultTabController(
   length: 2,
   child: MaterialApp(
     home: Scaffold(

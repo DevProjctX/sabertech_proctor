@@ -5,6 +5,7 @@ import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:sabertech_proctor/utils/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/screens/user_page.dart';
+import 'package:sabertech_proctor/screens/user_project_timeline.dart';
 import 'screens/home_page.dart';
 import 'screens/agent_status.dart';
 
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
         '/table': (context) => SortablePage(),
         '/project': (context) => GetProject(),
         '/agentStatus': (context) => AgentStatus(),
+        '/userTimeLine': (context) => ControlUserProjectTimeline()
       },
     );
   }
