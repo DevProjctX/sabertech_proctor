@@ -46,7 +46,7 @@ void getUsers() async {
     .get()
     .then((QuerySnapshot querySnapshot) {
         return querySnapshot.docs.forEach((doc) {
-            users.add(doc["user_id"])
+            users.add(doc["user_id"]);
         });
     });
 }

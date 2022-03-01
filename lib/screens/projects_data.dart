@@ -71,8 +71,8 @@ class GetProject extends StatelessWidget{
               // Tab index when user select it, it start from zero
               },
               tabs: [
-                Tab(icon: Text("Upcoming Project")),
-                Tab(icon: Text("Completed Project")),
+                Tab(icon: const Text("Upcoming Project")),
+                Tab(icon: const Text("Completed Project")),
               ],
             ),
             title: Text('Project Tabs'),
