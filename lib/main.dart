@@ -6,6 +6,7 @@ import 'package:sabertech_proctor/utils/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/screens/user_page.dart';
 import 'screens/home_page.dart';
+import 'screens/agent_status.dart';
 
 void main() async {
   await Firebase.initializeApp(
@@ -55,7 +56,8 @@ class _MyAppState extends State<MyApp> {
       home: HomePage(),
       routes: {
         '/table': (context) => SortablePage(),
-        '/project': (context) => GetProject()
+        '/project': (context) => GetProject(),
+        '/agentStatus': (context) => AgentStatus(),
       },
     );
   }
