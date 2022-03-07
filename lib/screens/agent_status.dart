@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sabertech_proctor/data/projects.dart';
 import 'package:sabertech_proctor/models/project.dart';
 
 class AgentStatus extends StatelessWidget {
