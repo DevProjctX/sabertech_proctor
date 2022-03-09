@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Project{
   final String projectName;
   final String status;
@@ -32,10 +34,10 @@ class Project{
         numAgents: json['num_agents'] as int,
         numStudents: json['num_students'] as int,
         numSupervisor: json['num_supervisor'] as int,
-        projectStartTime: json['project_start_time'] as DateTime,
-        projectEndTime: json['project_end_time'] as DateTime,
+        projectStartTime: (json['project_start_time'] as Timestamp).toDate(),
+        projectEndTime: (json['project_end_time'] as Timestamp).toDate(),
         projectDetails: json['project_details'] as String,
-        projectDate: json['project_date'] as DateTime,
+        projectDate: (json['project_date'] as Timestamp).toDate(),
       );
 
   Map<String, Object?> toJson() {
