@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sabertech_proctor/screens/home_page.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:flutter/material.dart';
+import 'package:sabertech_proctor/models/users.dart' as firebase_user;
 
 class GoogleButton extends StatefulWidget {
   @override
@@ -37,6 +39,7 @@ class _GoogleButtonState extends State<GoogleButton> {
             print(result);
             if (result != null) {
               // Navigator.of(context).pop();
+                            
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   fullscreenDialog: true,

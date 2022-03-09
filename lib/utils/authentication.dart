@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:sabertech_proctor/models/users.dart' as firebase_user;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -50,6 +52,23 @@ Future<User?> signInWithGoogle() async {
           await _auth.signInWithPopup(authProvider);
 
       user = userCredential.user;
+      print("before if1 $user");
+        user = userCredential.user;
+        if(userCredential.additionalUserInfo?.isNewUser == true && user != null){
+          var userRole = firebase_user.UserRole.agent;
+          print("inside if1 $user, UserRole:  $userRole");
+          final userToSave = firebase_user.User(
+                name: user.displayName,
+                emailId: user.email ?? "test@email.com",
+                userId: user.uid ,
+                userRole: "agent",
+                dateOfReg: DateTime.now()
+              );
+
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .add(userToSave.toJson());
+        }
     } catch (e) {
       print(e);
     }
@@ -71,8 +90,23 @@ Future<User?> signInWithGoogle() async {
       try {
         final UserCredential userCredential =
             await _auth.signInWithCredential(credential);
-
+        
+        print("before if $user");
         user = userCredential.user;
+        if(userCredential.additionalUserInfo?.isNewUser == true && user != null){
+          print("inside if $user");
+          final userToSave = firebase_user.User(
+                name: user.displayName,
+                emailId: user.email ?? "test@email.com",
+                userId: user.uid ,
+                userRole: "agent",
+                dateOfReg: DateTime.now()
+              );
+
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .add(userToSave.toJson());
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           print('The account already exists with a different credential.');
