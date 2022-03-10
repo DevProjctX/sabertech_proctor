@@ -1,4 +1,5 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sabertech_proctor/screens/projects_data.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
@@ -22,11 +23,21 @@ void main() async {
       appId: "1:175534480516:web:9cf8b0971d6ff0cfc6f6d1",
       measurementId: "G-BZQJ4NKXGQ"
   ));
-  runApp(
-    EasyDynamicThemeWidget(
-      child: MyApp(),
-    ),
-  );
+
+  FirebaseAuth.instance.authStateChanges().listen(
+      (event) {
+        if (event == null) {
+          print('----user is currently signed out');
+        } else {
+          print('----user is signed in ');
+        }
+        runApp(
+          EasyDynamicThemeWidget(
+            child: MyApp(),
+          ),
+        );
+      },
+    );
 }
 
 class MyApp extends StatefulWidget {
