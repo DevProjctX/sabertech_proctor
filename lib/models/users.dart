@@ -34,6 +34,7 @@ class User {
     };
   }
 
+  static const userRolesList = ['admin', 'supervisor', 'agent'];
   // User copy({
   //   String? name,
   //   String? lastName,

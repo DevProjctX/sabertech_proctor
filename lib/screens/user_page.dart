@@ -1,7 +1,12 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sabertech_proctor/models/users.dart';
+import 'package:sabertech_proctor/models/users.dart' as firestore_user;
+import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:sabertech_proctor/widgets/scrollable_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class SortablePage extends StatefulWidget {
@@ -10,21 +15,22 @@ class SortablePage extends StatefulWidget {
 }
 
 class _SortablePageState extends State<SortablePage> {
-  late List<User> users;
+  late List<firestore_user.User> users;
   int? sortColumnIndex;
   bool isAscending = false;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
   }
 
-  final userRef = FirebaseFirestore.instance.collection('users').withConverter<User>(
-      fromFirestore: (snapshot, _) => User.fromJson(snapshot.data()!),
+  final userRef = FirebaseFirestore.instance.collection('users').withConverter<firestore_user.User>(
+      fromFirestore: (snapshot, _) => firestore_user.User.fromJson(snapshot.data()!),
       toFirestore: (user, _) => user.toJson(),
     );
-    Future<List<User>> getUsers() async {
-      List<User> dataDocs = [];
+    Future<List<firestore_user.User>> getUsers() async {
+      userRole = await getUserRole(uid);
+      List<firestore_user.User> dataDocs = [];
       (await userRef.limit(10).get()
         .then((snapshot) => snapshot.docs.forEach((userDoc) => {
           // print(projectDoc.data());
@@ -50,35 +56,44 @@ class _SortablePageState extends State<SortablePage> {
             ),
             title: Text('Project Tabs'),
           ),
-          body: TabBarView(
-            children: [
-              FutureBuilder(
-                future: getUsers(),
-                builder: (BuildContext context, snapshot){
-                  if(snapshot.hasData){
-                    print(snapshot);
-                    return buildDataTable(snapshot.data as List<User>);
-                  } else{
-                    return Text("Loading data");
-                  }
-                },
-              ),
-              FutureBuilder(
-                future: getUsers(),
-                builder: (BuildContext context, snapshot){
-                  if(snapshot.hasData){
-                    return buildDataTable(snapshot.data as List<User>);
-                  } else{
-                    return Text("Loading data");
-                  }
-                },
-              ),
-            ],
-          ),
+          body: FutureBuilder(
+            future: getUserRole(uid),
+            builder: (BuildContext context, snapshot){
+              print("userRole user_page:$userRole");
+              print("snapshot data user_page:${snapshot.data}");
+              if(userRole == 'admin' && snapshot.hasData){
+                return TabBarView(
+                  children: [
+                    FutureBuilder(
+                      future: getUsers(),
+                      builder: (BuildContext context, snapshot){
+                        if(snapshot.hasData){
+                          print(snapshot);
+                          return buildDataTable(snapshot.data as List<firestore_user.User>);
+                        } else{
+                          return Text("Loading data");
+                        }
+                      },
+                    ),
+                    FutureBuilder(
+                      future: getUsers(),
+                      builder: (BuildContext context, snapshot){
+                        if(snapshot.hasData){
+                          return buildDataTable(snapshot.data as List<firestore_user.User>);
+                        } else{
+                          return Text("Loading data");
+                        }
+                      },
+                    ),
+                  ],
+                );
+              } else {return const Text("Not authorised");}
+            },
+          )
         )));
 
-  Widget buildDataTable(List<User> userData) {
-    final columns = ['name', 'emailId', 'Age'];
+  Widget buildDataTable(List<firestore_user.User> userData) {
+    final columns = ['name', 'emailId', 'Role', 'Select role'];
     return DataTable(
       columns: getColumns(columns),
       rows: getRows(userData)
@@ -92,14 +107,38 @@ class _SortablePageState extends State<SortablePage> {
           ))
       .toList();
 
-  List<DataRow> getRows(List<User> users) => users.map((User user) {
+  List<DataRow> getRows(List<firestore_user.User> users) => users.map((firestore_user.User user) {
         final cells = [user.name, user.emailId, user.userRole];
 
         return DataRow(cells: getCells(cells));
       }).toList();
 
-  List<DataCell> getCells(List<dynamic> cells) =>
-      cells.map((data) => DataCell(Text('$data'))).toList();
+  List<DataCell> getCells(List<dynamic> cells) {
+    var cellsList = cells.map(
+        (data) => DataCell(Text('$data'))
+      ).toList();
+    cellsList.add(
+      DataCell(DropdownButton<String>(
+        value: userRole,
+        onChanged: (String? newRole) {
+          setState(() {
+            changeUserRole(newRole?? 'agent');
+          });
+        },
+        items: firestore_user.User.userRolesList.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ))
+    );
+    return cellsList;
+        // .toList().add(
+        //   DataCell( Text("sdf");)
+        // );
+
+  }
 
   // void onSort(int columnIndex, bool ascending) {
   //   if (columnIndex == 0) {

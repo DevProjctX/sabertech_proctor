@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +15,7 @@ String? uid;
 String? name;
 String? userEmail;
 String? imageUrl;
+String? userRole;
 
 /// For checking if the user is already signed into the
 /// app using Google Sign In
@@ -21,17 +24,45 @@ Future getUser() async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool authSignedIn = prefs.getBool('auth') ?? false;
+  final userRef = FirebaseFirestore.instance.collection('users').withConverter<firebase_user.User>(
+        fromFirestore: (snapshot, _) => firebase_user.User.fromJson(snapshot.data()!),
+        toFirestore: (user, _) => user.toJson(),
+      );
 
   final User? user = _auth.currentUser;
 
   if (authSignedIn == true) {
     if (user != null) {
+      var userDetails = (await userRef.doc(user.uid).get()).data();
+      userRole = userDetails?.userRole;
+
+      print("UserRole : $userRole");
       uid = user.uid;
       name = user.displayName;
       userEmail = user.email;
       imageUrl = user.photoURL;
     }
   }
+}
+
+Future<String?> getUserRole(String? uid) async{
+  final userRef = FirebaseFirestore.instance.collection('users').withConverter<firebase_user.User>(
+        fromFirestore: (snapshot, _) => firebase_user.User.fromJson(snapshot.data()!),
+        toFirestore: (user, _) => user.toJson(),
+      );
+  var userDetails = (await userRef.doc(uid).get()).data();
+  userRole = userDetails?.userRole;
+  return userRole;
+}
+
+Future<String?> changeUserRole(String newRole) async {
+  (await FirebaseFirestore.instance.collection('users').doc(uid).update({'user_role':newRole})
+    .then((value) {
+      print("role changed successfully");
+      userRole = newRole;
+    } ));
+  print('user role changed $userRole');
+  return userRole;
 }
 
 /// For authenticating user using Google Sign In
@@ -50,7 +81,6 @@ Future<User?> signInWithGoogle() async {
     try {
       final UserCredential userCredential =
           await _auth.signInWithPopup(authProvider);
-
       user = userCredential.user;
       print("before if1 $user");
         user = userCredential.user;
@@ -66,8 +96,8 @@ Future<User?> signInWithGoogle() async {
               );
 
               FirebaseFirestore.instance
-                  .collection("users")
-                  .add(userToSave.toJson());
+                  .collection("users").doc(user.uid)
+                  .set(userToSave.toJson());
         }
     } catch (e) {
       print(e);
@@ -105,7 +135,8 @@ Future<User?> signInWithGoogle() async {
 
               FirebaseFirestore.instance
                   .collection("users")
-                  .add(userToSave.toJson());
+                  .doc(user.uid)
+                  .set(userToSave.toJson());
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
@@ -124,6 +155,7 @@ Future<User?> signInWithGoogle() async {
     name = user.displayName;
     userEmail = user.email;
     imageUrl = user.photoURL;
+    userRole = await getUserRole(uid);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('auth', true);

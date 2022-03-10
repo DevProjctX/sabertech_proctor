@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: HomePage(),
       routes: {
-        '/table': (context) => SortablePage(),
+        '/userTable': (context) => SortablePage(),
         '/project': (context) => GetProject(),
         '/agentStatus': (context) => AgentStatus(),
         '/userTimeLine': (context) => ControlUserProjectTimeline(),
