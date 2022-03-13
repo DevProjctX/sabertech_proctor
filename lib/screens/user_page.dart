@@ -1,12 +1,10 @@
 import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sabertech_proctor/constants.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sabertech_proctor/models/users.dart' as firestore_user;
 import 'package:sabertech_proctor/utils/authentication.dart';
-import 'package:sabertech_proctor/widgets/scrollable_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class SortablePage extends StatefulWidget {
@@ -93,7 +91,12 @@ class _SortablePageState extends State<SortablePage> {
         )));
 
   Widget buildDataTable(List<firestore_user.User> userData) {
-    final columns = ['name', 'emailId', 'Role', 'Select role'];
+    List<String> columns = [];
+    if(userRole == admin){
+      columns = ['name', 'emailId', 'Role', 'Select role'];
+    } else if(userRole == supervisor){
+      columns = ['name', 'emailId', 'Role'];
+    }
     return DataTable(
       columns: getColumns(columns),
       rows: getRows(userData)
@@ -109,7 +112,6 @@ class _SortablePageState extends State<SortablePage> {
 
   List<DataRow> getRows(List<firestore_user.User> users) => users.map((firestore_user.User user) {
         final cells = [user.name, user.emailId, user.userRole];
-
         return DataRow(cells: getCells(cells));
       }).toList();
 
@@ -117,27 +119,25 @@ class _SortablePageState extends State<SortablePage> {
     var cellsList = cells.map(
         (data) => DataCell(Text('$data'))
       ).toList();
-    cellsList.add(
-      DataCell(DropdownButton<String>(
-        value: userRole,
-        onChanged: (String? newRole) {
-          setState(() {
-            changeUserRole(newRole?? 'agent');
-          });
-        },
-        items: firestore_user.User.userRolesList.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ))
-    );
+    if(userRole == admin){
+      cellsList.add(
+        DataCell(DropdownButton<String>(
+          value: userRole,
+          onChanged: (String? newRole) {
+            setState(() {
+              changeUserRole(newRole?? 'agent');
+            });
+          },
+          items: firestore_user.User.userRolesList.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ))
+      );
+    }
     return cellsList;
-        // .toList().add(
-        //   DataCell( Text("sdf");)
-        // );
-
   }
 
   // void onSort(int columnIndex, bool ascending) {

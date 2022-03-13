@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Project{
+  final String projectId;
   final String projectName;
   final String status;
   final int duration;
@@ -14,6 +15,7 @@ class Project{
 
 
   Project({
+    required this.projectId,
     required this.projectName, 
     required this.status, 
     required this.duration,
@@ -28,6 +30,7 @@ class Project{
 
   Project.fromJson(Map<String, Object?> json)
     : this(
+        projectId: json['project_id']! as String,
         projectName: json['project_name']! as String,
         status: json['status']! as String,
         duration: json['project_duration']! as int,
@@ -42,6 +45,7 @@ class Project{
 
   Map<String, Object?> toJson() {
     return {
+      'project_id': projectId,
       'project_name': projectName,
       'status': status,
       'project_duration': duration,

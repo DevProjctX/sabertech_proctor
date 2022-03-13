@@ -1,65 +1,48 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/data/agent_project_data.dart';
-import 'package:sabertech_proctor/models/project.dart';
-import 'package:sabertech_proctor/screens/agent_project_approval.dart';
-import 'package:sabertech_proctor/screens/agents_project_view.dart';
+import 'package:sabertech_proctor/models/agent_project_view.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 
 import '../constants.dart';
 
-class GetProject extends StatelessWidget{
+class AgentProjectScreen extends StatefulWidget{
+  // var id;
 
+  const AgentProjectScreen({required Key key}) : super(key: key);
+  @override
+  _AgentProjectScreenState createState() => _AgentProjectScreenState();
+}
+class _AgentProjectScreenState extends State<AgentProjectScreen> {
   @override
   Widget build(BuildContext context) {
   List<DataColumn> getColumns(List<String> columns) => columns
     .map((String column) => DataColumn(
           label: Text(column),
+          // onSort: onSort,
         ))
     .toList();
 
 
-  List<DataCell> getCells(List<dynamic> cells, Project project){
+  List<DataCell> getCells(List<dynamic> cells, AgentProjectView project){
     var textCellData = cells.map((data) => DataCell(Text('$data'))).toList();
-    if(userRole == admin || userRole == supervisor){
       textCellData.add(
       DataCell(
-        ElevatedButton(
-          child: Text("Approve Agents"),
-          onPressed: () =>{
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context)=> AgentProjectApprovalScreen(key:UniqueKey(), id: project.projectId)))
-            },)
-        )
-      );
-    } else{
-      // print('$agentProjectData');
-      textCellData.add(
-      DataCell(
-        ElevatedButton(
-          child: Text("Signup"),
-          onPressed: () =>{
-                projectSignUp(uid ?? "", project.projectId).then((value) => 
-                  Navigator.of(context)
-                  .pushReplacement(
-                    MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (context) => GetProject(),
-                    )
+        project.agentStatus == notRegistered ?
+          ElevatedButton(
+            child: Text("Signup"),
+            onPressed: () =>{
+                  projectSignUp(uid ?? "", project.projectId).then((value) => 
+                    setState(()=>{})
                   )
-                )
-            },)
-        )
-      );
-    }
+              },): Text(project.agentStatus)
+      )
+    );
     return textCellData;
   }
 
-    List<DataRow> getRows(List<Project> project) => project.map(
-      (Project project) {
-        final cells = [project.projectName, project.status, project.duration];
+    List<DataRow> getRows(List<AgentProjectView> project) => project.map(
+      (AgentProjectView project) {
+        final cells = [project.projectName, project.projectStatus, project.duration];
         return DataRow(cells: getCells(cells, project));
       }).toList();
 
@@ -75,8 +58,8 @@ class GetProject extends StatelessWidget{
       rows: getRows(projectData)
     );
   }
-  print(userRole);
-  return (userRole == admin || userRole == supervisor) ? DefaultTabController(
+
+  return DefaultTabController(
   length: 2,
   child: MaterialApp(
     home: Scaffold(
@@ -95,7 +78,7 @@ class GetProject extends StatelessWidget{
           body: TabBarView(
             children: [
               FutureBuilder(
-                future: getAllProjectsForToday(),
+                future: getAgentProjectView(uid ?? ""),
                 builder: (BuildContext context, snapshot){
                   if(snapshot.hasData){
                     return buildDataTable(snapshot.data);
@@ -105,7 +88,7 @@ class GetProject extends StatelessWidget{
                 },
               ),
               FutureBuilder(
-                future: getAllActiveProjects(),
+                future: getAgentProjectView(uid ?? ""),
                 builder: (BuildContext context, snapshot){
                   if(snapshot.hasData){
                     return buildDataTable(snapshot.data);
@@ -116,6 +99,6 @@ class GetProject extends StatelessWidget{
               ),
             ],
           ),
-        ))): AgentProjectScreen(key:UniqueKey());
+        )));
   }
 }

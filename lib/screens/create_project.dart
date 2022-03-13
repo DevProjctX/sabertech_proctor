@@ -30,121 +30,124 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Form widgets'),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Scrollbar(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Card(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 800),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ...[
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            filled: true,
-                            hintText: 'Enter Project Name',
-                            labelText: 'Project Name',
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              projectName = value;
-                            });
-                          },
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            filled: true,
-                            hintText: 'Project description...',
-                            labelText: 'Project Description',
-                          ),
-                          onChanged: (value) {
-                            description = value;
-                          },
-                          maxLines: 5,
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: const InputDecoration(
-                            filled: true,
-                            hintText: '10',
-                            labelText: 'Agents Required',
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              numAgents = int.tryParse(value)!;
-                            });
-                          },
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: const InputDecoration(
-                            filled: true,
-                            hintText: '10',
-                            labelText: 'Total Students',
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              numStudents = int.tryParse(value)!;
-                            });
-                          },
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: const InputDecoration(
-                            filled: true,
-                            hintText: '10',
-                            labelText: 'Supervisor Required',
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              numSupervisor = int.tryParse(value)!;
-                            });
-                          },
-                        ),
-                        DatetimePickerWidget(
-                          dateTime: startDate,
-                          onChanged: (value) {
-                            setState(() {
-                              startDate = value;
-                            });
-                          },
-                          widgetText: 'Project Start time',
-                        ),
-                        DatetimePickerWidget(
-                          dateTime: endDate,
-                          onChanged: (value) {
-                            setState(() {
-                              endDate = value;
-                            });
-                          },
-                          widgetText: 'Project End time',
-                        ),
-                        //   date: date,
-                        //   onChanged: (value) {
-                        //     setState(() {
-                        //       date = value;
-                        //     });
-                        //   },
-                        // ),
+    String projectId;
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Form widgets'),
+          ),
+          body: Form(
+            key: _formKey,
+            child: Scrollbar(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Card(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ...[
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                filled: true,
+                                hintText: 'Enter Project Name',
+                                labelText: 'Project Name',
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  projectName = value;
+                                });
+                              },
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                filled: true,
+                                hintText: 'Project description...',
+                                labelText: 'Project Description',
+                              ),
+                              onChanged: (value) {
+                                description = value;
+                              },
+                              maxLines: 5,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              decoration: const InputDecoration(
+                                filled: true,
+                                hintText: '10',
+                                labelText: 'Agents Required',
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  numAgents = int.tryParse(value)!;
+                                });
+                              },
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              decoration: const InputDecoration(
+                                filled: true,
+                                hintText: '10',
+                                labelText: 'Total Students',
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  numStudents = int.tryParse(value)!;
+                                });
+                              },
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              decoration: const InputDecoration(
+                                filled: true,
+                                hintText: '10',
+                                labelText: 'Supervisor Required',
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  numSupervisor = int.tryParse(value)!;
+                                });
+                              },
+                            ),
+                            DatetimePickerWidget(
+                              dateTime: startDate,
+                              onChanged: (value) {
+                                setState(() {
+                                  startDate = value;
+                                });
+                              },
+                              widgetText: 'Project Start time',
+                            ),
+                            DatetimePickerWidget(
+                              dateTime: endDate,
+                              onChanged: (value) {
+                                setState(() {
+                                  endDate = value;
+                                });
+                              },
+                              widgetText: 'Project End time',
+                            ),
+                            //   date: date,
+                            //   onChanged: (value) {
+                            //     setState(() {
+                            //       date = value;
+                            //     });
+                            //   },
+                            // ),
                         RaisedButton(
 
                           onPressed: () {
+                            projectId = UniqueKey().toString();
                             //TODO: Firestore create a new record code
                             final projectDetails = Project(
+                              projectId:projectId,
                               projectName: projectName,
                               projectDetails: description,
                               status: 'CREATED',
@@ -159,8 +162,8 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
                             
 
                             FirebaseFirestore.instance
-                                .collection("projects")
-                                .add(projectDetails.toJson())
+                                .collection("projects").doc(projectId)
+                                .set(projectDetails.toJson())
                                 .whenComplete((){
                               Navigator.of(context).pop();
                             } );
