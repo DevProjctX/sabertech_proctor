@@ -85,6 +85,24 @@ Future<List<AgentProjectMap>> getUsersForProjectApproval(String projectId) async
   return dataDocs;
 }
 
+Future<List<AgentProjectMap>> getUsersForProject(String projectId) async {
+  final userProjectRef = FirebaseFirestore.instance.collection('agent-project-map').withConverter<AgentProjectMap>(
+    fromFirestore: (snapshot, _) => AgentProjectMap.fromJson(snapshot.data()!),
+    toFirestore: (agentProjectData, _) => agentProjectData.toJson(),
+  );
+  List<AgentProjectMap> dataDocs = [];
+  await userProjectRef.where('project_id', isEqualTo:projectId).get()
+  .then(
+    (snapshot) => {
+      // print('${snapshot.docs}')
+      snapshot.docs.forEach(
+        (userProjectData) => {
+        dataDocs.add(userProjectData.data())
+      })
+    });
+  return dataDocs;
+}
+
 Future<void> approveAgent(String uid, String projectId) async{
   final userProjectRef = FirebaseFirestore.instance.collection('agent-project-map');
   var projectAgentHash = createUidProjectHash(uid, projectId);
@@ -163,5 +181,19 @@ Future<List<Project>> getAllProjectsForToday() async {
           print(projectDoc.data()),
           dataDocs.add(projectDoc.data())
         })));
+      return dataDocs;
+    }
+
+
+Future<Project?> getProjectById(String id) async {
+      final projectRef = FirebaseFirestore.instance.collection('projects').withConverter<Project>(
+        fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
+        toFirestore: (project, _) => project.toJson(),
+      );
+      Project? dataDocs;
+      (await projectRef.doc(id).get()
+        .then((snapshot) => 
+          dataDocs = snapshot.data()
+        ));
       return dataDocs;
     }
