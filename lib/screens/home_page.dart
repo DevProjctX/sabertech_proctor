@@ -14,8 +14,6 @@ import 'package:sabertech_proctor/screens/projects_data.dart';
 import 'package:sabertech_proctor/widgets/top_bar_contents.dart';
 import 'package:flutter/material.dart';
 
-import 'mobile_auth.dart';
-
 class HomePage extends StatefulWidget {
   static const String route = '/';
 
@@ -62,7 +60,7 @@ class _HomePageState extends State<HomePage> {
           //   ),
       // drawer: ExploreDrawer(),
       body: Center(
-            child: userEmail == null ? AuthGate(key: UniqueKey()) : GetProject(),
+            child: userEmail == null ? AuthDialog() : GetProject(),
               // SizedBox(height: 40),
             // ]
           ),
