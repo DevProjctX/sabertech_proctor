@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart' as intl;
+import 'package:uuid/uuid.dart';
 import 'package:sabertech_proctor/models/project.dart';
 import 'package:sabertech_proctor/widgets/date_time_picker.dart';
 
@@ -144,7 +144,7 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
                         RaisedButton(
 
                           onPressed: () {
-                            projectId = UniqueKey().toString();
+                            projectId = Uuid().toString();
                             //TODO: Firestore create a new record code
                             final projectDetails = Project(
                               projectId:projectId,

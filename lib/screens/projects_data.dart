@@ -1,10 +1,10 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/data/agent_project_data.dart';
 import 'package:sabertech_proctor/models/project.dart';
 import 'package:sabertech_proctor/screens/agent_project_approval.dart';
 import 'package:sabertech_proctor/screens/agents_project_view.dart';
+import 'package:sabertech_proctor/screens/project_details.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 
 import '../constants.dart';
@@ -24,14 +24,15 @@ class GetProject extends StatelessWidget{
     var textCellData = cells.map((data) => DataCell(Text('$data'))).toList();
     if(userRole == admin || userRole == supervisor){
       textCellData.add(
-      DataCell(
-        ElevatedButton(
-          child: Text("Approve Agents"),
-          onPressed: () =>{
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context)=> AgentProjectApprovalScreen(key:UniqueKey(), id: project.projectId)))
-            },)
+        DataCell(
+          ElevatedButton(
+            child: Text("Approve Agents"),
+            onPressed: () =>{
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context)=> AgentProjectApprovalScreen(key:UniqueKey(), id: project.projectId)))
+            },
+          )
         )
       );
     } else{
@@ -54,6 +55,18 @@ class GetProject extends StatelessWidget{
         )
       );
     }
+    textCellData.add(
+        DataCell(
+          ElevatedButton(
+            child: Text("View Project"),
+            onPressed: () =>{
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context)=> ProjectDetails(key:UniqueKey(), projectId: project.projectId)))
+            },
+          )
+        )
+      );
     return textCellData;
   }
 
@@ -66,9 +79,9 @@ class GetProject extends StatelessWidget{
   Widget buildDataTable(projectData) {
     List<String> columns = [];
     if(userRole == admin || userRole == supervisor){
-      columns = ['Project Name', 'Project Status', 'Duration', 'View Agents'];
+      columns = ['Project Name', 'Project Status', 'Duration', 'View Agents', 'Project Details'];
     } else{
-      columns = ['Project Name', 'Project Status', 'Duration', 'Status'];
+      columns = ['Project Name', 'Project Status', 'Duration', 'Status', 'Project Details'];
     }
     return DataTable(
       columns: getColumns(columns),

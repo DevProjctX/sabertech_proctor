@@ -197,3 +197,10 @@ Future<Project?> getProjectById(String id) async {
         ));
       return dataDocs;
     }
+
+
+// Future<void> uploadAgentSupervisorDetails(List<String> header, List<List<String>> csvData) async{
+//   final userProjectRef = FirebaseFirestore.instance.collection('agent-project-map');
+//   var projectAgentHash = createUidProjectHash(uid, projectId);
+//   return await userProjectRef.doc(projectAgentHash).update({'agent_status': approved, 'approver_email': userEmail});
+// }

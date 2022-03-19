@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sabertech_proctor/screens/agent_project_approval.dart';
+import 'package:sabertech_proctor/screens/project_details.dart';
 import 'package:sabertech_proctor/screens/manager_project_view.dart';
 import 'package:sabertech_proctor/screens/projects_data.dart';
 import 'package:sabertech_proctor/screens/user_online_status.dart';
@@ -78,7 +79,8 @@ class _MyAppState extends State<MyApp> {
         '/createProject': (context) => FormWidgetsDemo(),
         '/viewAgentProject/:id': (context) => AgentProjectApprovalScreen(key:UniqueKey(), id: ""),
         '/agentOnline': (context) => UserInformation(),
-        '/projectDetails': (context) => ProjectDetailsScreen(key: UniqueKey(), id: 'plqRydtwW8nfTaygbtZC')
+        // '/projectDetails': (context) => ProjectDetailsScreen(key: UniqueKey(), id: 'plqRydtwW8nfTaygbtZC'),
+        // '/agentProjectDetails/:id': (context, args) => ProjectDetails(key: UniqueKey(), projectId: context.par),
       },
     );
   }
