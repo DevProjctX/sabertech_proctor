@@ -91,8 +91,7 @@ class GetProject extends StatelessWidget{
   print(userRole);
   return (userRole == admin || userRole == supervisor) ? DefaultTabController(
   length: 2,
-  child: MaterialApp(
-    home: Scaffold(
+  child: Scaffold(
           appBar: AppBar(
             bottom: TabBar(
               onTap: (index) {
@@ -129,6 +128,6 @@ class GetProject extends StatelessWidget{
               ),
             ],
           ),
-        ))): AgentProjectScreen(key:UniqueKey());
+        )): AgentProjectScreen(key:UniqueKey());
   }
 }

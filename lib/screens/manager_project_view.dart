@@ -86,8 +86,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     );
   }
   print(userRole);
-  return MaterialApp(
-    home: Scaffold(
+  return Scaffold(
           appBar: AppBar(
             title: Text('Project Details Page'),
           ),
@@ -127,7 +126,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
               ),
             ],
           )
-        ));
+        );
   }
 
   Widget buildDataTableUsers(userData) {

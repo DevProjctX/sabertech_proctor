@@ -40,8 +40,7 @@ class _SortablePageState extends State<SortablePage> {
   @override
   Widget build(BuildContext context) => DefaultTabController(
   length: 2,
-  child: MaterialApp(
-    home: Scaffold(
+  child: Scaffold(
           appBar: AppBar(
             bottom: TabBar(
               onTap: (index) {
@@ -88,7 +87,7 @@ class _SortablePageState extends State<SortablePage> {
               } else {return const Text("Not authorised");}
             },
           )
-        )));
+        ));
 
   Widget buildDataTable(List<firestore_user.User> userData) {
     List<String> columns = [];

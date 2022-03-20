@@ -50,8 +50,8 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-              backgroundColor:
-                  Theme.of(context).bottomAppBarColor.withOpacity(_opacity),
+              backgroundColor: Colors.white,
+                  // Theme.of(context).bottomAppBarColor.withOpacity(_opacity),
               title: TopBarContents(_opacity),
             ),
           // : PreferredSize(
