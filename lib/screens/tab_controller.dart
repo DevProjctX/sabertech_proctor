@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 DefaultTabController(
   length: 2,
-  child: MaterialApp(
-    home: Scaffold(
+  child: Scaffold(
       appBar: AppBar(
         bottom: TabBar(
           onTap: (index) {
@@ -31,5 +30,4 @@ DefaultTabController(
         ],
       ),
     ),
-  ),
 );

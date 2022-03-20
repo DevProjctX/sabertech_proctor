@@ -17,7 +17,10 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
   Widget build(BuildContext context) {
   List<DataColumn> getColumns(List<String> columns) => columns
     .map((String column) => DataColumn(
-          label: Text(column),
+          label: Text(column, style: TextStyle(
+            fontWeight: FontWeight.w600,
+            ),),
+        
           // onSort: onSort,
         ))
     .toList();
@@ -55,25 +58,34 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
     }
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(projectData)
+      rows: getRows(projectData),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 227, 242, 245)),
     );
   }
 
+TabBar _tabBar = TabBar(
+                onTap: (index) {
+                // Tab index when user select it, it start from zero
+                },
+                tabs: [
+                  Tab(icon: const Text("Upcoming Project", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
+                  Tab(icon: const Text("Completed Project", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
+                ],
+                );
+
   return DefaultTabController(
   length: 2,
-  child: MaterialApp(
-    home: Scaffold(
+  child: Scaffold(
           appBar: AppBar(
-            bottom: TabBar(
-              onTap: (index) {
-              // Tab index when user select it, it start from zero
-              },
-              tabs: [
-                Tab(icon: const Text("Upcoming Project")),
-                Tab(icon: const Text("Completed Project")),
-              ],
-            ),
-            title: Text('Project Tabs'),
+            bottom: PreferredSize(
+              preferredSize: _tabBar.preferredSize,
+              child: ColoredBox(
+                color: Colors.white,
+                child: _tabBar,
+                )),
+            title: Text('Project Tabs', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400), ),
+            backgroundColor: Color.fromARGB(207, 204, 240, 237),
           ),
           body: TabBarView(
             children: [
@@ -99,6 +111,6 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
               ),
             ],
           ),
-        )));
+        ));
   }
 }
