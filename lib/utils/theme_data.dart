@@ -17,7 +17,7 @@ var lightThemeData = ThemeData(
     ),
     headline1: TextStyle(color: Colors.blueGrey[800]),
   ),
-  bottomAppBarColor: Colors.blueGrey[900],
+  bottomAppBarColor: Color.fromARGB(255, 255, 255, 255),
   iconTheme: IconThemeData(color: Colors.blueGrey),
   brightness: Brightness.light,
 );

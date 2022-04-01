@@ -42,7 +42,7 @@ class _TopBarContentsState extends State<TopBarContents> {
               Text(
                 'Sabertech',
                 style: TextStyle(
-                  color: Colors.blueGrey[100],
+                  color: Color.fromARGB(255, 9, 73, 100),
                   fontSize: 20,
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.w400,
@@ -72,7 +72,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                             style: TextStyle(
                               color: _isHovering[0]
                                   ? Colors.blue[200]
-                                  : Colors.white,
+                                  : Color.fromARGB(255, 9, 73, 100),
                             ),
                           ),
                           SizedBox(height: 5),
@@ -84,7 +84,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                             child: Container(
                               height: 2,
                               width: 20,
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 9, 73, 100),
                             ),
                           )
                         ],
@@ -109,7 +109,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                             style: TextStyle(
                               color: _isHovering[1]
                                   ? Colors.blue[200]
-                                  : Colors.white,
+                                  : Color.fromARGB(255, 9, 73, 100),
                             ),
                           ),
                           SizedBox(height: 5),
@@ -121,7 +121,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                             child: Container(
                               height: 2,
                               width: 20,
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 9, 73, 100),
                             ),
                           )
                         ],
@@ -134,7 +134,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                 icon: Icon(Icons.brightness_6),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                color: Colors.white,
+                color: Color.fromARGB(255, 9, 73, 100),
                 onPressed: () {
                   EasyDynamicTheme.of(context).changeTheme();
                 },
@@ -177,8 +177,8 @@ class _TopBarContentsState extends State<TopBarContents> {
                             name ?? userEmail!,
                             style: TextStyle(
                               color: _isHovering[3]
-                                  ? Colors.white
-                                  : Colors.white70,
+                                  ? Color.fromARGB(255, 47, 183, 241)
+                                  : Color.fromARGB(255, 9, 73, 100),
                             ),
                           ),
                           SizedBox(width: 10),
@@ -221,7 +221,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                                       'Sign out',
                                       style: TextStyle(
                                         fontSize: 14,
-                                        color: Colors.white,
+                                        color: Color.fromARGB(255, 9, 73, 100),
                                       ),
                                     ),
                             ),
