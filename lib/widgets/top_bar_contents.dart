@@ -1,7 +1,6 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:sabertech_proctor/screens/home_page.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
-import 'package:sabertech_proctor/widgets/auth_dialog.dart';
 import 'package:flutter/material.dart';
 
 class TopBarContents extends StatefulWidget {
@@ -153,7 +152,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                     ? () {
                         showDialog(
                           context: context,
-                          builder: (context) => AuthDialog(),
+                          builder: (context) => SizedBox(),
                         );
                       }
                     : null,

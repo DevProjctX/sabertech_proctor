@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/constants.dart';
 import 'package:sabertech_proctor/screens/project_details_agent.dart';
-import 'package:sabertech_proctor/screens/project_details_manager_view.dart';
+import 'package:sabertech_proctor/screens/manager_view/project_details_manager_view.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -51,6 +51,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
               error = true;
             }
           });
+          
           if(error){
             setState(() {
                 option1Text = "File format or data not correct";
@@ -81,8 +82,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            userRole == agent ?
-            SizedBox(height: 20,):
+            userRole == agent ? SizedBox(height: 20,):
             Align(
               alignment: Alignment.centerRight,
               child: Column(

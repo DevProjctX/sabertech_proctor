@@ -16,12 +16,14 @@ String? name;
 String? userEmail;
 String? imageUrl;
 String? userRole;
+String? userMobile;
+bool userSignedIn = false;
 
 /// For checking if the user is already signed into the
 /// app using Google Sign In
-Future getUser() async {
+Future<firebase_user.User?> getUser() async {
+  print("running getUser");
   await Firebase.initializeApp();
-
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool authSignedIn = prefs.getBool('auth') ?? false;
   final userRef = FirebaseFirestore.instance.collection('users').withConverter<firebase_user.User>(
@@ -30,19 +32,22 @@ Future getUser() async {
       );
 
   final User? user = _auth.currentUser;
-
+  firebase_user.User? userDetails;
   if (authSignedIn == true) {
     if (user != null) {
-      var userDetails = (await userRef.doc(user.uid).get()).data();
+      userDetails = (await userRef.doc(user.uid).get()).data();
       userRole = userDetails?.userRole;
-
+      userSignedIn = true;
       print("UserRole : $userRole");
       uid = user.uid;
       name = user.displayName;
       userEmail = user.email;
       imageUrl = user.photoURL;
+      userMobile = userDetails?.mobileNumber;
     }
   }
+  print(userDetails);
+  return userDetails;
 }
 
 Future<String?> getUserRole(String? uid) async{
@@ -84,20 +89,23 @@ Future<User?> signInWithGoogle() async {
       user = userCredential.user;
       print("before if1 $user");
         user = userCredential.user;
-        if(userCredential.additionalUserInfo?.isNewUser == true && user != null){
-          var userRole = firebase_user.UserRole.agent;
-          print("inside if1 $user, UserRole:  $userRole");
-          final userToSave = firebase_user.User(
-                name: user.displayName,
-                emailId: user.email ?? "test@email.com",
-                userId: user.uid ,
-                userRole: "agent",
-                dateOfReg: DateTime.now()
-              );
+        if(user != null){
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('auth', true);
+          await getUser();
+          // var userRole = firebase_user.UserRole.agent;
+          // print("inside if1 $user, UserRole:  $userRole");
+          // final userToSave = firebase_user.User(
+          //       name: user.displayName,
+          //       emailId: user.email ?? "test@email.com",
+          //       userId: user.uid ,
+          //       userRole: "agent",
+          //       dateOfReg: DateTime.now()
+          //     );
 
-              FirebaseFirestore.instance
-                  .collection("users").doc(user.uid)
-                  .set(userToSave.toJson());
+          //     FirebaseFirestore.instance
+          //         .collection("users").doc(user.uid)
+          //         .set(userToSave.toJson());
         }
     } catch (e) {
       print(e);
@@ -230,22 +238,8 @@ Future<String> signOut() async {
 
   uid = null;
   userEmail = null;
-
-  return 'User signed out';
-}
-
-/// For signing out of their Google account
-void signOutGoogle() async {
-  await googleSignIn.signOut();
-  await _auth.signOut();
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('auth', false);
-
-  uid = null;
+  userSignedIn = false;
   name = null;
-  userEmail = null;
-  imageUrl = null;
-
-  print("User signed out of Google account");
+  userMobile = null;
+  return 'User signed out';
 }

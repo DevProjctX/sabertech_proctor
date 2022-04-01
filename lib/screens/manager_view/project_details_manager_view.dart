@@ -1,8 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/models/project.dart';
+import 'package:sabertech_proctor/screens/project_agent_list.dart';
 
-import '../data/agent_project_data.dart';
+import '../../data/agent_project_data.dart';
 
 class ProjectDetailsAdminView extends StatefulWidget {
   ProjectDetailsAdminView({required Key key, required this.projectId}) : super(key: key);
@@ -16,10 +17,8 @@ class _ProjectDetailsState extends State<ProjectDetailsAdminView> {
   
   @override
   Widget build(BuildContext context) {
-
-  return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
+    print("ProjectDetails");
+  return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.min,
         // mainAxisAlignment: MainAxisAlignment.center,
@@ -50,30 +49,30 @@ class _ProjectDetailsState extends State<ProjectDetailsAdminView> {
           SizedBox(
             height: 40,
           ),
-          FutureBuilder(
-            future: getProjectById(widget.projectId),
-            builder: (BuildContext context, snapshot){
-              if (snapshot.hasError) {
-                print(snapshot.error);
-                return Text("Something went wrong");
-              }
-              if (!snapshot.hasData) {
-                return Text("No data");
-              }
+          ProjectAgentListScreen(key: UniqueKey(), id: widget.projectId,),
+          // FutureBuilder(
+          //   future: getProjectById(widget.projectId),
+          //   builder: (BuildContext context, snapshot){
+          //     if (snapshot.hasError) {
+          //       print(snapshot.error);
+          //       return Text("Something went wrong");
+          //     }
+          //     if (!snapshot.hasData) {
+          //       return Text("No data");
+          //     }
 
-              if (!snapshot.hasData) {
-                return Text("Document does not exist");
-              }
-              if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                return buildDataTable(snapshot.data);
-              }
-              else{
-                return Text("Loading data");
-              }
-            }
-          ),
+          //     if (!snapshot.hasData) {
+          //       return Text("Document does not exist");
+          //     }
+          //     if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+          //       return buildDataTable(snapshot.data);
+          //     }
+          //     else{
+          //       return Text("Loading data");
+          //     }
+          //   }
+          // ),
         ]
-      ),
     );
   }
 

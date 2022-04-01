@@ -144,7 +144,7 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
                         RaisedButton(
 
                           onPressed: () {
-                            projectId = Uuid().toString();
+                            projectId = Uuid().v1();
                             //TODO: Firestore create a new record code
                             final projectDetails = Project(
                               projectId:projectId,

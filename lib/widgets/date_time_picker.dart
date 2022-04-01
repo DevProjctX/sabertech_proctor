@@ -51,7 +51,9 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
           child: const Text('Edit'),
           onPressed: () async {
             var newDate = await pickDateTime(context);
-
+            print("newDate date picker $newDate");
+            newDate = widget.dateTime;
+            print("newDate date picker $newDate");
             // Don't change the date if the date picker returns null.
             if (newDate == null) {
               return;
@@ -65,9 +67,11 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
 
   Future pickDateTime(BuildContext context) async {
     final date = await pickDate(context);
+    print("pickDateTime date $date");
     if (date == null) return;
 
     final time = await pickTime(context);
+    print("pickDateTime time $time");
     if (time == null) return;
 
     setState(() {
@@ -85,9 +89,10 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
     final newDate = await showDatePicker(
       context: context,
       initialDate: widget.dateTime, // ?? initialDate,
-      firstDate: DateTime(DateTime.now().year - 5),
+      firstDate: DateTime(DateTime.now().year - 1),
       lastDate: DateTime(DateTime.now().year + 5),
     );
+    print("pickDate $newDate");
     return newDate!;
   }
 
@@ -96,6 +101,7 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
       context: context,
       initialTime: TimeOfDay(hour: widget.dateTime.hour, minute: 0),
     );
+    print("pickTime $newTime");
     return newTime!;
   }
 }

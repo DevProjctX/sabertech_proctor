@@ -115,7 +115,7 @@ Future<void> rejectAgent(String uid, String projectId) async{
   return await userProjectRef.doc(projectAgentHash).update({'agent_status': rejected, 'approver_email': userEmail});
 }
 
-Future<List<AgentProjectView>> getAgentProjectView(String uid) async{
+Future<List<AgentProjectView>> getAgentSignedUpProjectView(String uid) async{
   List<AgentProjectView> agentProjectView = [];
   await getAllActiveProjects().then(
     (project) async => {
@@ -133,7 +133,9 @@ Future<List<AgentProjectView>> getAgentProjectView(String uid) async{
                 duration: element.duration, 
                 projectDetails: element.projectDetails
               ),
-              agentProjectView.add(singleProjectView)
+              if(singleProjectView.agentStatus != notRegistered){
+                agentProjectView.add(singleProjectView)
+              }
             });
         }
       )
@@ -142,19 +144,70 @@ Future<List<AgentProjectView>> getAgentProjectView(String uid) async{
   return agentProjectView;
 }
 
+Future<List<AgentProjectView>> getUnsignedUpcomingProjectAgent(String uid) async{
+  List<AgentProjectView> agentProjectView = [];
+  await getAllActiveProjects().then(
+    (project) async => {
+      await Future.wait( project.map(
+        (element) async { 
+          AgentProjectView singleProjectView;
+          await getAgentProjectData(uid, element.projectId).then(
+            (agentProject) => {
+              singleProjectView = AgentProjectView(
+                projectName: element.projectName, 
+                projectId: element.projectId, 
+                agentStatus: agentProject?.agentStatus ?? notRegistered, 
+                projectStartTime: element.projectStartTime, 
+                projectStatus: element.status, 
+                duration: element.duration, 
+                projectDetails: element.projectDetails
+              ),
+              if(singleProjectView.agentStatus == notRegistered){
+                agentProjectView.add(singleProjectView)
+              }
+            });
+        }
+      )
+      )}
+  );
+  return agentProjectView;
+}
+
+DateTime timeStampTomorrow() {
+  return DateTime.now().add(const Duration(days: 1));
+}
+
+DateTime timeStampYesterday() {
+  return DateTime.now().subtract(const Duration(days: 1));
+}
+
 Future<List<Project>> getAllActiveProjects() async {
-      final projectRef = FirebaseFirestore.instance.collection('projects').withConverter<Project>(
-        fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
-        toFirestore: (project, _) => project.toJson(),
-      );
-      List<Project> dataDocs = [];
-      (await projectRef.limit(10).get()
-        .then((snapshot) => snapshot.docs.forEach((projectDoc) => {
-          // print(projectDoc.data());
-          dataDocs.add(projectDoc.data())
-        })));
-      return dataDocs;
-    }
+    final projectRef = FirebaseFirestore.instance.collection('projects').withConverter<Project>(
+      fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
+      toFirestore: (project, _) => project.toJson(),
+    );
+    List<Project> dataDocs = [];
+    (await projectRef.where('project_date', isGreaterThan:timeStampYesterday()).orderBy('project_date').limit(10).get()
+      .then((snapshot) => snapshot.docs.forEach((projectDoc) => {
+        // print(projectDoc.data());
+        dataDocs.add(projectDoc.data())
+      })));
+    return dataDocs;
+}
+
+Future<List<Project>> getAllProjects() async {
+    final projectRef = FirebaseFirestore.instance.collection('projects').withConverter<Project>(
+      fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
+      toFirestore: (project, _) => project.toJson(),
+    );
+    List<Project> dataDocs = [];
+    (await projectRef.orderBy('project_date', descending: true).limit(100).get()
+      .then((snapshot) => snapshot.docs.forEach((projectDoc) => {
+        // print(projectDoc.data());
+        dataDocs.add(projectDoc.data())
+      })));
+    return dataDocs;
+}
 
 Future<List<Project>> getAllEndedProjects() async {
       final projectRef = FirebaseFirestore.instance.collection('projects').withConverter<Project>(
@@ -176,7 +229,10 @@ Future<List<Project>> getAllProjectsForToday() async {
         toFirestore: (project, _) => project.toJson(),
       );
       List<Project> dataDocs = [];
-      (await projectRef.limit(10).get()
+      print(timeStampYesterday());
+      print(timeStampTomorrow());
+      (await projectRef.orderBy('project_date').where('project_date', isGreaterThan:timeStampYesterday()).where('project_date', isLessThan:timeStampTomorrow())
+      .limit(10).get()
         .then((snapshot) => snapshot.docs.forEach((projectDoc) => {
           print(projectDoc.data()),
           dataDocs.add(projectDoc.data())

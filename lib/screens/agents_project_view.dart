@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/data/agent_project_data.dart';
 import 'package:sabertech_proctor/models/agent_project_view.dart';
+import 'package:sabertech_proctor/screens/project_details.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 
 import '../constants.dart';
@@ -37,6 +38,18 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
               },): Text(project.agentStatus)
       )
     );
+    textCellData.add(
+        DataCell(
+          ElevatedButton(
+            child: Text("View Project"),
+            onPressed: () =>{
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context)=> ProjectDetails(key:UniqueKey(), projectId: project.projectId)))
+            },
+          )
+        )
+      );
     return textCellData;
   }
 
@@ -51,7 +64,7 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
     if(userRole == admin || userRole == supervisor){
       columns = ['Project Name', 'Project Status', 'Duration', 'View Agents'];
     } else{
-      columns = ['Project Name', 'Project Status', 'Duration', 'Status'];
+      columns = ['Project Name', 'Project Status', 'Duration', 'Status', 'View Project'];
     }
     return DataTable(
       columns: getColumns(columns),
@@ -69,8 +82,8 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
               // Tab index when user select it, it start from zero
               },
               tabs: [
-                Tab(icon: const Text("Upcoming Project")),
-                Tab(icon: const Text("Completed Project")),
+                Tab(icon: const Text("Siigned Up Project")),
+                Tab(icon: const Text("Floated Project")),
               ],
             ),
             title: Text('Project Tabs'),
@@ -78,7 +91,7 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
           body: TabBarView(
             children: [
               FutureBuilder(
-                future: getAgentProjectView(uid ?? ""),
+                future: getAgentSignedUpProjectView(uid ?? ""),
                 builder: (BuildContext context, snapshot){
                   if(snapshot.hasData){
                     return buildDataTable(snapshot.data);
@@ -88,7 +101,7 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
                 },
               ),
               FutureBuilder(
-                future: getAgentProjectView(uid ?? ""),
+                future: getUnsignedUpcomingProjectAgent(uid ?? ""),
                 builder: (BuildContext context, snapshot){
                   if(snapshot.hasData){
                     return buildDataTable(snapshot.data);

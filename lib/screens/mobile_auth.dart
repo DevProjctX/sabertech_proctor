@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 // import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sabertech_proctor/screens/home_page.dart';
+import 'package:sabertech_proctor/screens/projects_data.dart';
+import 'package:sabertech_proctor/utils/authentication.dart';
 // import 'package:twitter_login/twitter_login.dart';
 
 typedef OAuthSignIn = void Function();
@@ -44,11 +47,8 @@ class ScaffoldSnackbar {
 enum AuthMode { login, register, phone }
 
 extension on AuthMode {
-  String get label => this == AuthMode.login
-      ? 'Sign in'
-      : this == AuthMode.phone
-          ? 'Sign in'
-          : 'Register';
+  String get label => 
+          'Sign in with Mobile Number';
 }
 
 /// Entrypoint example for various sign-in flows with Firebase.
@@ -61,15 +61,13 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String error = '';
   String verificationId = '';
 
-  AuthMode mode = AuthMode.login;
+  AuthMode mode = AuthMode.phone;
 
   bool isLoading = false;
 
@@ -84,19 +82,6 @@ class _AuthGateState extends State<AuthGate> {
   @override
   void initState() {
     super.initState();
-    if (kIsWeb) {
-      authButtons = {
-        Buttons.Google: _signInWithGoogle,
-        // Buttons.GitHub: _signInWithGitHub,
-        // Buttons.Twitter: _signInWithTwitter,
-      };
-    } else {
-      authButtons = {
-        if (!Platform.isMacOS) Buttons.Google: _signInWithGoogle,
-        // if (!Platform.isMacOS) Buttons.GitHub: _signInWithGitHub,
-        // if (!Platform.isMacOS) Buttons.Twitter: _signInWithTwitter,
-      };
-    }
   }
 
   @override
@@ -128,6 +113,7 @@ class _AuthGateState extends State<AuthGate> {
                                   onPressed: () {
                                     setState(() {
                                       error = '';
+                                      mode = AuthMode.phone;
                                     });
                                   },
                                   child: const Text(
@@ -142,157 +128,153 @@ class _AuthGateState extends State<AuthGate> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          if (mode != AuthMode.phone)
-                            Column(
-                              children: [
-                                TextFormField(
-                                  controller: emailController,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Email',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  validator: (value) =>
-                                      value != null && value.isNotEmpty
-                                          ? null
-                                          : 'Required',
-                                ),
-                                const SizedBox(height: 20),
-                                TextFormField(
-                                  controller: passwordController,
-                                  obscureText: true,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Password',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  validator: (value) =>
-                                      value != null && value.isNotEmpty
-                                          ? null
-                                          : 'Required',
-                                ),
-                              ],
+                          // if (mode != AuthMode.phone)
+                          //   Column(
+                          //     children: [
+                          //       TextFormField(
+                          //         controller: emailController,
+                          //         decoration: const InputDecoration(
+                          //           hintText: 'Email',
+                          //           border: OutlineInputBorder(),
+                          //         ),
+                          //         validator: (value) =>
+                          //             value != null && value.isNotEmpty
+                          //                 ? null
+                          //                 : 'Required',
+                          //       ),
+                          //       const SizedBox(height: 20),
+                          //       TextFormField(
+                          //         controller: passwordController,
+                          //         obscureText: true,
+                          //         decoration: const InputDecoration(
+                          //           hintText: 'Password',
+                          //           border: OutlineInputBorder(),
+                          //         ),
+                          //         validator: (value) =>
+                          //             value != null && value.isNotEmpty
+                          //                 ? null
+                          //                 : 'Required',
+                          //       ),
+                          //     ],
+                          //   ),
+                          // if (mode == AuthMode.phone)
+                          TextFormField(
+                            controller: phoneController,
+                            decoration: const InputDecoration(
+                              hintText: '1234567890',
+                              labelText: 'Phone number',
+                              border: OutlineInputBorder(),
                             ),
-                          if (mode == AuthMode.phone)
-                            TextFormField(
-                              controller: phoneController,
-                              decoration: const InputDecoration(
-                                hintText: '+12345678910',
-                                labelText: 'Phone number',
-                                border: OutlineInputBorder(),
-                              ),
-                              validator: (value) =>
-                                  value != null && value.isNotEmpty
-                                      ? null
-                                      : 'Required',
-                            ),
+                            validator: (value) =>
+                                value != null && value.isNotEmpty
+                                    ? null
+                                    : 'Required',
+                          ),
                           const SizedBox(height: 20),
                           SizedBox(
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: isLoading ? null : _emailAndPassword,
-                              child: isLoading
-                                  ? const CircularProgressIndicator.adaptive()
-                                  : Text(mode.label),
+                              onPressed: isLoading ? null : _phoneAuth,
+                              child: Text(mode.label),
                             ),
                           ),
-                          TextButton(
-                            onPressed: _resetPassword,
-                            child: const Text('Forgot password?'),
-                          ),
-                          ...authButtons.keys
-                              .map(
-                                (button) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 200),
-                                    child: isLoading
-                                        ? Container(
-                                            color: Colors.grey[200],
-                                            height: 50,
-                                            width: double.infinity,
-                                          )
-                                        : SizedBox(
-                                            width: double.infinity,
-                                            height: 50,
-                                            child: SignInButton(
-                                              button,
-                                              onPressed: authButtons[button]!,
-                                            ),
-                                          ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: OutlinedButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : () {
-                                      if (mode != AuthMode.phone) {
-                                        setState(() {
-                                          mode = AuthMode.phone;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          mode = AuthMode.login;
-                                        });
-                                      }
-                                    },
-                              child: isLoading
-                                  ? const CircularProgressIndicator.adaptive()
-                                  : Text(
-                                      mode != AuthMode.phone
-                                          ? 'Sign in with Phone Number'
-                                          : 'Sign in with Email and Password',
-                                    ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          if (mode != AuthMode.phone)
-                            RichText(
-                              text: TextSpan(
-                                style: Theme.of(context).textTheme.bodyText1,
-                                children: [
-                                  TextSpan(
-                                    text: mode == AuthMode.login
-                                        ? "Don't have an account? "
-                                        : 'You have an account? ',
-                                  ),
-                                  TextSpan(
-                                    text: mode == AuthMode.login
-                                        ? 'Register now'
-                                        : 'Click to login',
-                                    style: const TextStyle(color: Colors.blue),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        setState(() {
-                                          mode = mode == AuthMode.login
-                                              ? AuthMode.register
-                                              : AuthMode.login;
-                                        });
-                                      },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(height: 10),
-                          RichText(
-                            text: TextSpan(
-                              style: Theme.of(context).textTheme.bodyText1,
-                              children: [
-                                const TextSpan(text: 'Or '),
-                                TextSpan(
-                                  text: 'continue as guest',
-                                  style: const TextStyle(color: Colors.blue),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = _anonymousAuth,
-                                ),
-                              ],
-                            ),
-                          ),
+                          // // TextButton(
+                          //   onPressed: _resetPassword,
+                          //   child: const Text('Forgot password?'),
+                          // ),
+                          // ...authButtons.keys
+                          //     .map(
+                          //       (button) => Padding(
+                          //         padding:
+                          //             const EdgeInsets.symmetric(vertical: 5),
+                          //         child: AnimatedSwitcher(
+                          //           duration: const Duration(milliseconds: 200),
+                          //           child: isLoading
+                          //               ? Container(
+                          //                   color: Colors.grey[200],
+                          //                   height: 50,
+                          //                   width: double.infinity,
+                          //                 )
+                          //               : SizedBox(
+                          //                   width: double.infinity,
+                          //                   height: 50,
+                          //                   child: SignInButton(
+                          //                     button,
+                          //                     onPressed: authButtons[button]!,
+                          //                   ),
+                          //                 ),
+                          //         ),
+                          //       ),
+                          //     )
+                          //     .toList(),
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   height: 50,
+                          //   child: OutlinedButton(
+                          //     onPressed: isLoading
+                          //         ? null
+                          //         : () {
+                          //             if (mode != AuthMode.phone) {
+                          //               setState(() {
+                          //                 mode = AuthMode.phone;
+                          //               });
+                          //             } else {
+                          //               setState(() {
+                          //                 mode = AuthMode.login;
+                          //               });
+                          //             }
+                          //           },
+                          //     child: isLoading
+                          //         ? const CircularProgressIndicator.adaptive()
+                          //         : Text(
+                          //             'Sign in with Phone Number'
+                          //           ),
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 20),
+                          // if (mode != AuthMode.phone)
+                          //   RichText(
+                          //     text: TextSpan(
+                          //       style: Theme.of(context).textTheme.bodyText1,
+                          //       children: [
+                          //         TextSpan(
+                          //           text: mode == AuthMode.login
+                          //               ? "Don't have an account? "
+                          //               : 'You have an account? ',
+                          //         ),
+                          //         TextSpan(
+                          //           text: mode == AuthMode.login
+                          //               ? 'Register now'
+                          //               : 'Click to login',
+                          //           style: const TextStyle(color: Colors.blue),
+                          //           recognizer: TapGestureRecognizer()
+                          //             ..onTap = () {
+                          //               setState(() {
+                          //                 mode = mode == AuthMode.login
+                          //                     ? AuthMode.register
+                          //                     : AuthMode.login;
+                          //               });
+                          //             },
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // const SizedBox(height: 10),
+                          // RichText(
+                          //   text: TextSpan(
+                          //     style: Theme.of(context).textTheme.bodyText1,
+                          //     children: [
+                          //       const TextSpan(text: 'Or '),
+                          //       TextSpan(
+                          //         text: 'continue as guest',
+                          //         style: const TextStyle(color: Colors.blue),
+                          //         recognizer: TapGestureRecognizer()
+                          //           ..onTap = _anonymousAuth,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -306,96 +288,85 @@ class _AuthGateState extends State<AuthGate> {
     );
   }
 
-  Future _resetPassword() async {
-    String? email;
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Send'),
-            ),
-          ],
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Enter your email'),
-              const SizedBox(height: 20),
-              TextFormField(
-                onChanged: (value) {
-                  email = value;
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  // Future _resetPassword() async {
+  //   String? email;
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: const Text('Send'),
+  //           ),
+  //         ],
+  //         content: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             const Text('Enter your email'),
+  //             const SizedBox(height: 20),
+  //             TextFormField(
+  //               onChanged: (value) {
+  //                 email = value;
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
 
-    if (email != null) {
-      try {
-        await _auth.sendPasswordResetEmail(email: email!);
-        ScaffoldSnackbar.of(context).show('Password reset email is sent');
-      } catch (e) {
-        ScaffoldSnackbar.of(context).show('Error resetting');
-      }
-    }
-  }
+  //   if (email != null) {
+  //     try {
+  //       await _auth.sendPasswordResetEmail(email: email!);
+  //       ScaffoldSnackbar.of(context).show('Password reset email is sent');
+  //     } catch (e) {
+  //       ScaffoldSnackbar.of(context).show('Error resetting');
+  //     }
+  //   }
+  // }
 
-  Future<void> _anonymousAuth() async {
-    setIsLoading();
+  // Future<void> _anonymousAuth() async {
+  //   setIsLoading();
 
-    try {
-      await _auth.signInAnonymously();
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        error = '${e.message}';
-      });
-    } catch (e) {
-      setState(() {
-        error = '$e';
-      });
-    } finally {
-      setIsLoading();
-    }
-  }
+  //   try {
+  //     await _auth.signInAnonymously();
+  //   } on FirebaseAuthException catch (e) {
+  //     setState(() {
+  //       error = '${e.message}';
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       error = '$e';
+  //     });
+  //   } finally {
+  //     setIsLoading();
+  //   }
+  // }
 
-  Future<void> _emailAndPassword() async {
-    if (formKey.currentState?.validate() ?? false) {
-      setIsLoading();
+  // Future<void> _emailAndPassword() async {
+  //   if (formKey.currentState?.validate() ?? false) {
+  //     setIsLoading();
 
-      try {
-        if (mode == AuthMode.login) {
-          await _auth.signInWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
-          );
-        } else if (mode == AuthMode.register) {
-          await _auth.createUserWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
-          );
-        } else {
-          await _phoneAuth();
-        }
-      } on FirebaseAuthException catch (e) {
-        setState(() {
-          error = '${e.message}';
-        });
-      } catch (e) {
-        setState(() {
-          error = '$e';
-        });
-      } finally {
-        setIsLoading();
-      }
-    }
-  }
+  //     try {
+  //         await _phoneAuth();
+  //     } on FirebaseAuthException catch (e) {
+  //       setState(() {
+  //         error = '${e.message}';
+  //       });
+  //     } catch (e) {
+  //       setState(() {
+  //         error = '$e';
+  //       });
+  //     } finally {
+  //       print("set is loading");
+  //       setIsLoading();
+  //     }
+  //   }
+  // }
 
   Future<String?> getSmsCodeFromUser() async {
     String? smsCode;
@@ -448,15 +419,23 @@ class _AuthGateState extends State<AuthGate> {
       try {
         if (kIsWeb) {
           final confirmationResult =
-              await _auth.signInWithPhoneNumber(phoneController.text);
+              await _auth.signInWithPhoneNumber('+91'+phoneController.text);
           final smsCode = await getSmsCodeFromUser();
-
           if (smsCode != null) {
-            await confirmationResult.confirm(smsCode);
+            await confirmationResult.confirm(smsCode).then((value){
+              userSignedIn = true;
+              print("Signed in using sms");
+              print(value);
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context)=> HomePage()));
+            });
           }
         } else {
+          print("else SMS code");
           await _auth.verifyPhoneNumber(
-            phoneNumber: phoneController.text,
+            phoneNumber: '+91'+phoneController.text,
             verificationCompleted: (_) {},
             verificationFailed: (e) {
               setState(() {
@@ -475,7 +454,12 @@ class _AuthGateState extends State<AuthGate> {
 
                 try {
                   // Sign the user in (or link) with the credential
-                  await _auth.signInWithCredential(credential);
+                  await _auth.signInWithCredential(credential).then((value) => 
+                    {
+                      userSignedIn = true,
+                      print("signinWithCredentials $value")
+                    }
+                  );
                 } on FirebaseAuthException catch (e) {
                   setState(() {
                     error = e.message ?? '';
@@ -494,11 +478,26 @@ class _AuthGateState extends State<AuthGate> {
         setState(() {
           error = '$e';
         });
-      } finally {
-        setIsLoading();
       }
     }
   }
+
+  // if(userCredential.additionalUserInfo?.isNewUser == true && user != null){
+  //         print("inside if $user");
+  //         final userToSave = firebase_user.User(
+  //               name: user.displayName,
+  //               emailId: user.email ?? "test@email.com",
+  //               userId: user.uid ,
+  //               userRole: "agent",
+  //               mobileNumber: "1231231231",
+  //               dateOfReg: DateTime.now()
+  //             );
+
+  //             FirebaseFirestore.instance
+  //                 .collection("users")
+  //                 .doc(user.uid)
+  //                 .set(userToSave.toJson());
+  //       }
 
   Future<void> _signInWithGoogle() async {
     setIsLoading();

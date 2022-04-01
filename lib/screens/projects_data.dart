@@ -6,6 +6,7 @@ import 'package:sabertech_proctor/screens/agent_project_approval.dart';
 import 'package:sabertech_proctor/screens/agents_project_view.dart';
 import 'package:sabertech_proctor/screens/project_details.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
+// import 'package:intl/intl.dart'; // for date format
 
 import '../constants.dart';
 
@@ -72,16 +73,16 @@ class GetProject extends StatelessWidget{
 
     List<DataRow> getRows(List<Project> project) => project.map(
       (Project project) {
-        final cells = [project.projectName, project.status, project.duration];
+        final cells = [project.projectName, project.status, project.projectDate?.toIso8601String().split('T').first];
         return DataRow(cells: getCells(cells, project));
       }).toList();
 
   Widget buildDataTable(projectData) {
     List<String> columns = [];
     if(userRole == admin || userRole == supervisor){
-      columns = ['Project Name', 'Project Status', 'Duration', 'View Agents', 'Project Details'];
+      columns = ['Project Name', 'Project Status', 'Project Date', 'View Agents', 'Project Details'];
     } else{
-      columns = ['Project Name', 'Project Status', 'Duration', 'Status', 'Project Details'];
+      columns = ['Project Name', 'Project Status', 'Project Date', 'Status', 'Project Details'];
     }
     return DataTable(
       columns: getColumns(columns),
@@ -91,18 +92,20 @@ class GetProject extends StatelessWidget{
   print(userRole);
   return (userRole == admin || userRole == supervisor) ? DefaultTabController(
   length: 2,
-  child: MaterialApp(
-    home: Scaffold(
+  child: Scaffold(
           appBar: AppBar(
             bottom: TabBar(
               onTap: (index) {
               // Tab index when user select it, it start from zero
               },
               tabs: [
-                Tab(icon: const Text("Upcoming Project")),
-                Tab(icon: const Text("Completed Project")),
+                Tab(icon: const Text("Recent Upcoming Project")),
+                Tab(icon: const Text("All Projects"))
               ],
             ),
+            // backgroundColor:
+            //       Theme.of(context).bottomAppBarColor.withOpacity(_opacity),
+            // title: TopBarContents(_opacity),
             title: Text('Project Tabs'),
           ),
           body: TabBarView(
@@ -118,7 +121,7 @@ class GetProject extends StatelessWidget{
                 },
               ),
               FutureBuilder(
-                future: getAllActiveProjects(),
+                future: getAllProjects(),
                 builder: (BuildContext context, snapshot){
                   if(snapshot.hasData){
                     return buildDataTable(snapshot.data);
@@ -129,6 +132,6 @@ class GetProject extends StatelessWidget{
               ),
             ],
           ),
-        ))): AgentProjectScreen(key:UniqueKey());
+        )): AgentProjectScreen(key:UniqueKey());
   }
 }

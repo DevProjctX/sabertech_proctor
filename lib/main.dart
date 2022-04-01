@@ -2,8 +2,6 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sabertech_proctor/screens/agent_project_approval.dart';
-import 'package:sabertech_proctor/screens/project_details.dart';
-import 'package:sabertech_proctor/screens/manager_project_view.dart';
 import 'package:sabertech_proctor/screens/projects_data.dart';
 import 'package:sabertech_proctor/screens/user_online_status.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
@@ -29,11 +27,17 @@ void main() async {
   ));
 
   FirebaseAuth.instance.authStateChanges().listen(
-      (event) {
+      (event) async {
         if (event == null) {
           print('----user is currently signed out');
+          userSignedIn = false;
         } else {
-          print('----user is signed in ');
+          userSignedIn = true;
+          userEmail = event.email;
+          name = event.displayName;
+          uid = event.uid;
+          await getUserRole(event.uid);
+          print('----user is signed in $event ');
         }
         runApp(
           EasyDynamicThemeWidget(

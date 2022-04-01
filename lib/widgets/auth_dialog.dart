@@ -221,194 +221,194 @@ class _AuthDialogState extends State<AuthDialog> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Container(
-                          width: double.maxFinite,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              primary: Colors.blueGrey.shade800,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                _isLoggingIn = true;
-                                textFocusNodeEmail.unfocus();
-                                textFocusNodePassword.unfocus();
-                              });
-                              if (_validateEmail(textControllerEmail.text) ==
-                                      null &&
-                                  _validatePassword(
-                                          textControllerPassword.text) ==
-                                      null) {
-                                await signInWithEmailPassword(
-                                        textControllerEmail.text,
-                                        textControllerPassword.text)
-                                    .then((result) {
-                                  if (result != null) {
-                                    print(result);
-                                    setState(() {
-                                      loginStatus =
-                                          'You have successfully logged in';
-                                      loginStringColor = Colors.green;
-                                    });
-                                    Future.delayed(Duration(milliseconds: 500),
-                                        () {
-                                      // Navigator.of(context).pop();
-                                      Navigator.of(context)
-                                          .pushReplacement(MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (context) => HomePage(),
-                                      ));
-                                    });
-                                  }
-                                }).catchError((error) {
-                                  print('Login Error: $error');
-                                  setState(() {
-                                    loginStatus =
-                                        'Error occured while logging in';
-                                    loginStringColor = Colors.red;
-                                  });
-                                });
-                              } else {
-                                setState(() {
-                                  loginStatus = 'Please enter email & password';
-                                  loginStringColor = Colors.red;
-                                });
-                              }
-                              setState(() {
-                                _isLoggingIn = false;
-                                textControllerEmail.text = '';
-                                textControllerPassword.text = '';
-                                _isEditingEmail = false;
-                                _isEditingPassword = false;
-                              });
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: 15.0,
-                                bottom: 15.0,
-                              ),
-                              child: _isLoggingIn
-                                  ? SizedBox(
-                                      height: 16,
-                                      width: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            new AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
-                                        ),
-                                      ),
-                                    )
-                                  : Text(
-                                      'Log in',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Flexible(
-                        flex: 1,
-                        child: Container(
-                          width: double.maxFinite,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              primary: Colors.blueGrey.shade800,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                _isRegistering = true;
-                              });
-                              await registerWithEmailPassword(
-                                      textControllerEmail.text,
-                                      textControllerPassword.text)
-                                  .then((result) {
-                                if (result != null) {
-                                  setState(() {
-                                    loginStatus =
-                                        'You have registered successfully';
-                                    loginStringColor = Colors.green;
-                                  });
-                                  print(result);
-                                }
-                              }).catchError((error) {
-                                print('Registration Error: $error');
-                                setState(() {
-                                  loginStatus =
-                                      'Error occured while registering';
-                                  loginStringColor = Colors.red;
-                                });
-                              });
+                // Padding(
+                //   padding: const EdgeInsets.all(20.0),
+                //   child: Row(
+                //     mainAxisSize: MainAxisSize.max,
+                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //     children: [
+                //       Flexible(
+                //         flex: 1,
+                //         child: Container(
+                //           width: double.maxFinite,
+                //           child: TextButton(
+                //             style: TextButton.styleFrom(
+                //               primary: Colors.blueGrey.shade800,
+                //               shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.circular(15.0),
+                //               ),
+                //             ),
+                //             onPressed: () async {
+                //               setState(() {
+                //                 _isLoggingIn = true;
+                //                 textFocusNodeEmail.unfocus();
+                //                 textFocusNodePassword.unfocus();
+                //               });
+                //               if (_validateEmail(textControllerEmail.text) ==
+                //                       null &&
+                //                   _validatePassword(
+                //                           textControllerPassword.text) ==
+                //                       null) {
+                //                 await signInWithEmailPassword(
+                //                         textControllerEmail.text,
+                //                         textControllerPassword.text)
+                //                     .then((result) {
+                //                   if (result != null) {
+                //                     print(result);
+                //                     setState(() {
+                //                       loginStatus =
+                //                           'You have successfully logged in';
+                //                       loginStringColor = Colors.green;
+                //                     });
+                //                     Future.delayed(Duration(milliseconds: 500),
+                //                         () {
+                //                       // Navigator.of(context).pop();
+                //                       Navigator.of(context)
+                //                           .pushReplacement(MaterialPageRoute(
+                //                         fullscreenDialog: true,
+                //                         builder: (context) => HomePage(),
+                //                       ));
+                //                     });
+                //                   }
+                //                 }).catchError((error) {
+                //                   print('Login Error: $error');
+                //                   setState(() {
+                //                     loginStatus =
+                //                         'Error occured while logging in';
+                //                     loginStringColor = Colors.red;
+                //                   });
+                //                 });
+                //               } else {
+                //                 setState(() {
+                //                   loginStatus = 'Please enter email & password';
+                //                   loginStringColor = Colors.red;
+                //                 });
+                //               }
+                //               setState(() {
+                //                 _isLoggingIn = false;
+                //                 textControllerEmail.text = '';
+                //                 textControllerPassword.text = '';
+                //                 _isEditingEmail = false;
+                //                 _isEditingPassword = false;
+                //               });
+                //             },
+                //             child: Padding(
+                //               padding: EdgeInsets.only(
+                //                 top: 15.0,
+                //                 bottom: 15.0,
+                //               ),
+                //               child: _isLoggingIn
+                //                   ? SizedBox(
+                //                       height: 16,
+                //                       width: 16,
+                //                       child: CircularProgressIndicator(
+                //                         strokeWidth: 2,
+                //                         valueColor:
+                //                             new AlwaysStoppedAnimation<Color>(
+                //                           Colors.white,
+                //                         ),
+                //                       ),
+                //                     )
+                //                   : Text(
+                //                       'Log in',
+                //                       style: TextStyle(
+                //                         fontSize: 14,
+                //                         color: Colors.white,
+                //                       ),
+                //                     ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //       SizedBox(width: 20),
+                //       Flexible(
+                //         flex: 1,
+                //         child: Container(
+                //           width: double.maxFinite,
+                //           child: TextButton(
+                //             style: TextButton.styleFrom(
+                //               primary: Colors.blueGrey.shade800,
+                //               shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.circular(15),
+                //               ),
+                //             ),
+                //             onPressed: () async {
+                //               setState(() {
+                //                 _isRegistering = true;
+                //               });
+                //               await registerWithEmailPassword(
+                //                       textControllerEmail.text,
+                //                       textControllerPassword.text)
+                //                   .then((result) {
+                //                 if (result != null) {
+                //                   setState(() {
+                //                     loginStatus =
+                //                         'You have registered successfully';
+                //                     loginStringColor = Colors.green;
+                //                   });
+                //                   print(result);
+                //                 }
+                //               }).catchError((error) {
+                //                 print('Registration Error: $error');
+                //                 setState(() {
+                //                   loginStatus =
+                //                       'Error occured while registering';
+                //                   loginStringColor = Colors.red;
+                //                 });
+                //               });
 
-                              setState(() {
-                                _isRegistering = false;
-                              });
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: 15.0,
-                                bottom: 15.0,
-                              ),
-                              child: _isRegistering
-                                  ? SizedBox(
-                                      height: 16,
-                                      width: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            new AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
-                                        ),
-                                      ),
-                                    )
-                                  : Text(
-                                      'Sign up',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                loginStatus != null
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 20.0,
-                          ),
-                          child: Text(
-                            loginStatus!,
-                            style: TextStyle(
-                              color: loginStringColor,
-                              fontSize: 14,
-                              // letterSpacing: 3,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(),
+                //               setState(() {
+                //                 _isRegistering = false;
+                //               });
+                //             },
+                //             child: Padding(
+                //               padding: EdgeInsets.only(
+                //                 top: 15.0,
+                //                 bottom: 15.0,
+                //               ),
+                //               child: _isRegistering
+                //                   ? SizedBox(
+                //                       height: 16,
+                //                       width: 16,
+                //                       child: CircularProgressIndicator(
+                //                         strokeWidth: 2,
+                //                         valueColor:
+                //                             new AlwaysStoppedAnimation<Color>(
+                //                           Colors.white,
+                //                         ),
+                //                       ),
+                //                     )
+                //                   : Text(
+                //                       'Sign up',
+                //                       style: TextStyle(
+                //                         fontSize: 14,
+                //                         color: Colors.white,
+                //                       ),
+                //                     ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // loginStatus != null
+                //     ? Center(
+                //         child: Padding(
+                //           padding: const EdgeInsets.only(
+                //             bottom: 20.0,
+                //           ),
+                //           child: Text(
+                //             loginStatus!,
+                //             style: TextStyle(
+                //               color: loginStringColor,
+                //               fontSize: 14,
+                //               // letterSpacing: 3,
+                //             ),
+                //           ),
+                //         ),
+                //       )
+                //     : Container(),
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 40.0,

@@ -1,16 +1,9 @@
-import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+
+import 'package:sabertech_proctor/screens/mobile_auth.dart';
+import 'package:sabertech_proctor/screens/user_details_form.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
-import 'package:sabertech_proctor/widgets/auth_dialog.dart';
-import 'package:sabertech_proctor/widgets/web_scrollbar.dart';
-import 'package:sabertech_proctor/widgets/bottom_bar.dart';
-import 'package:sabertech_proctor/widgets/carousel.dart';
-import 'package:sabertech_proctor/widgets/destination_heading.dart';
-import 'package:sabertech_proctor/widgets/explore_drawer.dart';
-import 'package:sabertech_proctor/widgets/featured_heading.dart';
-import 'package:sabertech_proctor/widgets/featured_tiles.dart';
-import 'package:sabertech_proctor/widgets/floating_quick_access_bar.dart';
-import 'package:sabertech_proctor/widgets/responsive.dart';
 import 'package:sabertech_proctor/screens/projects_data.dart';
+import 'package:sabertech_proctor/widgets/auth_dialog.dart';
 import 'package:sabertech_proctor/widgets/top_bar_contents.dart';
 import 'package:flutter/material.dart';
 
@@ -54,60 +47,9 @@ class _HomePageState extends State<HomePage> {
                   Theme.of(context).bottomAppBarColor.withOpacity(_opacity),
               title: TopBarContents(_opacity),
             ),
-          // : PreferredSize(
-          //     preferredSize: Size(screenSize.width, 1000),
-          //     child: TopBarContents(_opacity),
-          //   ),
-      // drawer: ExploreDrawer(),
       body: Center(
-            child: userEmail == null ? AuthDialog() : GetProject(),
-              // SizedBox(height: 40),
-            // ]
+            child: userSignedIn == false ? AuthDialog() : userMobile == null ? UserDetailForm(key: UniqueKey()) : GetProject(),
           ),
-      // WebScrollbar(
-      //   color: Colors.blueGrey,
-      //   backgroundColor: Colors.blueGrey.withOpacity(0.3),
-      //   width: 10,
-      //   heightFraction: 0.3,
-      //   controller: _scrollController,
-      //   child: SingleChildScrollView(
-      //     controller: _scrollController,
-      //     physics: ClampingScrollPhysics(),
-      //     child: Column(
-      //       children: [
-      //         // SizedBox(height: 40),
-      //         // AuthDialog(),
-      //         SizedBox(height: 40),
-      //         Stack(
-      //           children: [
-      //             Container(
-      //               child: AuthDialog(),
-      //             ),
-      //             Column(
-      //               children: [
-      //                 FloatingQuickAccessBar(screenSize: screenSize),
-      //                 Container(
-      //                   child: Column(
-      //                     children: [
-      //                       FeaturedHeading(
-      //                         screenSize: screenSize,
-      //                       ),
-      //                       FeaturedTiles(screenSize: screenSize)
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ],
-      //             )
-      //           ],
-      //         ),
-      //         // DestinationHeading(screenSize: screenSize),
-      //         // DestinationCarousel(),
-      //         SizedBox(height: screenSize.height / 10),
-      //         // BottomBar(),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
