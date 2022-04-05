@@ -5,3 +5,6 @@ const admin = 'admin';
 const supervisor = 'supervisor';
 const agent = 'agent';
 const notRegistered = 'notRegistered';
+const googleMeetText = "Google Meet Link";
+const agentLoginCodeText = "Agent Login Code";
+const agentLoginIdText = "Agent Login Id";

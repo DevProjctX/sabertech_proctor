@@ -11,7 +11,9 @@ class AgentProjectMap{
   final DateTime? agentLoginTime;
   final DateTime? agentProjectStartTime;
   final DateTime? agentProjectEndTime;
-
+  final String? agentLoginId;
+  final String? agentLoginCode;
+  final String? googleMeetLink;
 
   AgentProjectMap({
     required this.agentId,
@@ -23,7 +25,10 @@ class AgentProjectMap{
     this.agentProjectActivityScore,
     this.agentLoginTime,
     this.agentProjectStartTime,
-    this.agentProjectEndTime
+    this.agentProjectEndTime,
+    this.agentLoginId,
+    this.agentLoginCode,
+    this.googleMeetLink
     });
 
   AgentProjectMap.fromJson(Map<String, dynamic> json)
@@ -38,6 +43,9 @@ class AgentProjectMap{
         agentLoginTime: (json['agent_login_time'] as Timestamp?)?.toDate(),
         agentProjectStartTime: (json['agent_project_start_time'] as Timestamp?)?.toDate(),
         agentProjectEndTime: (json['agent_project_end_time'] as Timestamp?)?.toDate(),
+        agentLoginId: json['agent_login_id'] as String?,
+        agentLoginCode: json['agent_login_code'] as String?,
+        googleMeetLink: json['google_meet_link'] as String?,
       );
 
   Map<String, Object?> toJson() {
@@ -51,7 +59,10 @@ class AgentProjectMap{
       'agent_project_activity_score': agentProjectActivityScore,
       'agent_login_time': agentLoginTime,
       'agent_project_start_time': agentProjectStartTime,
-      'agent_project_end_time': agentProjectEndTime
+      'agent_project_end_time': agentProjectEndTime,
+      'agent_login_id': agentLoginId,
+      'agent_login_code': agentLoginCode,
+      'google_meet_link': googleMeetLink
     };
   }
 }

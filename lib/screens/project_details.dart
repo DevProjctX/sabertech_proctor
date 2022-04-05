@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/constants.dart';
 import 'package:sabertech_proctor/screens/project_details_agent.dart';
 import 'package:sabertech_proctor/screens/manager_view/project_details_manager_view.dart';
+import 'package:sabertech_proctor/screens/supervisor_view/supervisor_project_agent_list.dart';
+import 'package:sabertech_proctor/screens/supervisor_view/supervisor_project_details.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -108,6 +110,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
             ),
             SizedBox(height:20),
             userRole == agent ? ProjectDetailsAgentView(projectId: widget.projectId, key: UniqueKey()): 
+            userRole == supervisor ? ProjectDetailsSupView(projectId: widget.projectId, key: UniqueKey()) :
               ProjectDetailsAdminView(projectId: widget.projectId, key: UniqueKey()),
           ]
         ),

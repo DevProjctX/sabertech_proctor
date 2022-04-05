@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:sabertech_proctor/screens/home_page.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:flutter/material.dart';
+import 'package:sabertech_proctor/widgets/navbar_menu.dart';
 
 class TopBarContents extends StatefulWidget {
   final double opacity;
@@ -63,7 +64,27 @@ class _TopBarContentsState extends State<TopBarContents> {
                               : _isHovering[0] = false;
                         });
                       },
-                      onTap: () {},
+                      onTap: () {
+                        // final left = offset.dx;
+                        // final top = offset.dy + renderBox.size.height;
+                        // //*The right does not indicates the width
+                        // final right = left + renderBox.size.width;
+                        // final RelativeRect position = RelativeRect.fromLTRB(left, top, right, 0.0), ;
+                        // showMenu(context: context, position: position, items: [
+                        //   PopupMenuItem<int>(
+                        //     value: 0,
+                        //     child: Text('Working a lot harder'),
+                        //   ),
+                        //   PopupMenuItem<int>(
+                        //     value: 1,
+                        //     child: Text('Working a lot less'),
+                        //   ),
+                        //   PopupMenuItem<int>(
+                        //     value: 1,
+                        //     child: Text('Working a lot smarter'),
+                        //   ),
+                        // ]);
+                      },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -104,14 +125,27 @@ class _TopBarContentsState extends State<TopBarContents> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            'Projects',
-                            style: TextStyle(
-                              color: _isHovering[1]
-                                  ? Colors.blue[200]
-                                  : Color.fromARGB(255, 9, 73, 100),
-                            ),
-                          ),
+                          // DropdownButton<String>(
+                          //   items: <String>['A', 'B', 'C', 'D'].map((String value) {
+                          //     return DropdownMenuItem<String>(
+                          //       value: value,
+                          //       child: Text(value),
+                          //     );
+                          //   }).toList(),
+                          //   onChanged: (_) {
+                          //     print(_);
+                          //   },
+                          //   // value: 'Projects',
+                          // ),
+                          MainMenu( title: 'Project'),
+                          // Text(
+                          //   'Projects',
+                          //   style: TextStyle(
+                          //     color: _isHovering[1]
+                          //         ? Colors.blue[200]
+                          //         : Color.fromARGB(255, 9, 73, 100),
+                          //   ),
+                          // ),
                           SizedBox(height: 5),
                           Visibility(
                             maintainAnimation: true,
@@ -130,15 +164,15 @@ class _TopBarContentsState extends State<TopBarContents> {
                   ],
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.brightness_6),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                color: Color.fromARGB(255, 9, 73, 100),
-                onPressed: () {
-                  EasyDynamicTheme.of(context).changeTheme();
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.brightness_6),
+              //   splashColor: Colors.transparent,
+              //   highlightColor: Colors.transparent,
+              //   color: Color.fromARGB(255, 9, 73, 100),
+              //   onPressed: () {
+              //     EasyDynamicTheme.of(context).changeTheme();
+              //   },
+              // ),
               SizedBox(
                 width: screenSize.width / 50,
               ),
@@ -172,15 +206,15 @@ class _TopBarContentsState extends State<TopBarContents> {
                                   )
                                 : Container(),
                           ),
-                          SizedBox(width: 5),
-                          Text(
-                            name ?? userEmail!,
-                            style: TextStyle(
-                              color: _isHovering[3]
-                                  ? Color.fromARGB(255, 47, 183, 241)
-                                  : Color.fromARGB(255, 9, 73, 100),
-                            ),
-                          ),
+                          // SizedBox(width: 5),
+                          // Text(
+                          //   name ?? userEmail!,
+                          //   style: TextStyle(
+                          //     color: _isHovering[3]
+                          //         ? Color.fromARGB(255, 47, 183, 241)
+                          //         : Color.fromARGB(255, 9, 73, 100),
+                          //   ),
+                          // ),
                           SizedBox(width: 10),
                           TextButton(
                             style: TextButton.styleFrom(
@@ -236,3 +270,4 @@ class _TopBarContentsState extends State<TopBarContents> {
     );
   }
 }
+
