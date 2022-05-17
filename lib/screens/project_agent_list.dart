@@ -17,28 +17,30 @@ class _ProjectAgentListScreenState extends State<ProjectAgentListScreen> {
   @override
   Widget build(BuildContext context) {
     print("ProjectAgentListScreen");
-    return FutureBuilder(
-          future: getUsersForProject(widget.id),
-          builder: (BuildContext context, snapshot){
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return Text("Something went wrong");
-            }
-            if (!snapshot.hasData) {
-              return Text("No data");
-            }
+    return SingleChildScrollView(
+                child: FutureBuilder(
+                  future: getUsersForProject(widget.id),
+                  builder: (BuildContext context, snapshot){
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Text("Something went wrong");
+                    }
+                    if (!snapshot.hasData) {
+                      return Text("No data");
+                    }
 
-            if (!snapshot.hasData) {
-              return Text("Document does not exist");
-            }
-            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-              return buildDataTable(snapshot.data);
-            }
-            else{
-              return Text("Loading data");
-            }
-          }
-        );
+                    if (!snapshot.hasData) {
+                      return Text("Document does not exist");
+                    }
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                      return buildDataTable(snapshot.data);
+                    }
+                    else{
+                      return Text("Loading data");
+                    }
+                  }
+                )
+            );
   }
               
   Widget buildDataTable(userData) {

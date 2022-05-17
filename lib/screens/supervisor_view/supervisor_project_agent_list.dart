@@ -19,7 +19,8 @@ class _ProjectAgentListSupViewState extends State<ProjectAgentListSupView> {
   var projectAgentMap;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return SingleChildScrollView(
+                child:FutureBuilder(
           future: getUsersForProjectForSup(widget.id),
           builder: (BuildContext context, snapshot){
             if (snapshot.hasError) {
@@ -40,6 +41,7 @@ class _ProjectAgentListSupViewState extends State<ProjectAgentListSupView> {
               return Text("Loading data");
             }
           }
+          )
         );
   }
               

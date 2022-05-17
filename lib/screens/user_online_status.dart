@@ -312,23 +312,24 @@ class _UserInformationState extends State<UserInformation> {
               //         }
               //     ),
               // ),
-              StreamBuilder<QuerySnapshot>(
-                stream: _usersStream,
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Something went wrong');
-                  }
+              SingleChildScrollView(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _usersStream,
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Loading");
-                  }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
 
-                  return buildDataTable(
-                    snapshot.data!.docs
-                  );
-                },
-              )
-            ],
+                    return buildDataTable(
+                      snapshot.data!.docs
+                    );
+                  },
+                ))
+              ],
           ),
         )
       );

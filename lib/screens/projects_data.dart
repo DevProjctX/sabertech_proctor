@@ -138,26 +138,30 @@ class GetProject extends StatelessWidget{
           ),
           body: TabBarView(
             children: [
-              FutureBuilder(
-                future: getAllProjectsForToday(),
-                builder: (BuildContext context, snapshot){
-                  if(snapshot.hasData){
-                    return buildDataTable(snapshot.data);
-                  } else{
-                    return Text("Loading data");
-                  }
-                },
+              SingleChildScrollView(
+                child:FutureBuilder(
+                  future: getAllProjectsForToday(),
+                  builder: (BuildContext context, snapshot){
+                    if(snapshot.hasData){
+                      return buildDataTable(snapshot.data);
+                    } else{
+                      return Text("Loading data");
+                    }
+                  },
+                ),
               ),
-              FutureBuilder(
-                future: getAllProjects(),
-                builder: (BuildContext context, snapshot){
-                  if(snapshot.hasData){
-                    return buildDataTable(snapshot.data);
-                  } else{
-                    return Text("Loading data");
-                  }
-                },
-              ),
+              SingleChildScrollView(
+                child: FutureBuilder(
+                  future: getAllProjects(),
+                  builder: (BuildContext context, snapshot){
+                    if(snapshot.hasData){
+                      return buildDataTable(snapshot.data);
+                    } else{
+                      return Text("Loading data");
+                    }
+                  },
+                ),
+              )
             ],
           ),
         )): AgentProjectScreen(key:UniqueKey());

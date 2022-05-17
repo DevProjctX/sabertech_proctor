@@ -30,7 +30,7 @@ class _AgentProjectScreenState extends State<AgentProjectTimelineScreen> {
 
 
   List<DataCell> getCells(List<dynamic> cells){
-    return cells.map((data) => DataCell(Text('$data'))).toList();
+    return cells.map((data) => DataCell(Text('$data%'))).toList();
   }
 
     List<DataRow> getRows(TimelineView timelineView){
@@ -84,24 +84,15 @@ TabBar _tabBar = TabBar(
                 Container(
                   alignment: Alignment.topCenter,
                   width: MediaQuery.of(context).size.width / 2,
-                  child:FutureBuilder(
-                    future: getLast10MinsData(widget.agentEmail, widget.projectId),
-                    builder: (BuildContext context, snapshot){
-                      if(snapshot.hasData){
-                        return buildDataTable(snapshot.data);
-                      } else{
-                        return Text("Loading data");
-                      }
-                    },
-                  ),
-                ),
-              Container(
-                  alignment: Alignment.topCenter,
-                  width: MediaQuery.of(context).size.width / 2,
-                  child: SingleChildScrollView(
-                    child:
+                  child: Column(children: [
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text("Last 10 Mins Data in %", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
+                      )
+                    ),
                     FutureBuilder(
-                      future: getOverallTimelineData(widget.agentEmail, widget.projectId),
+                      future: getLast10MinsData(widget.agentEmail, widget.projectId),
                       builder: (BuildContext context, snapshot){
                         if(snapshot.hasData){
                           return buildDataTable(snapshot.data);
@@ -109,7 +100,31 @@ TabBar _tabBar = TabBar(
                           return Text("Loading data");
                         }
                       },
-                    )
+                    ),
+                  ],)
+                ),
+              Container(
+                  alignment: Alignment.topCenter,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text("Overall Data in %", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
+                        )
+                      ),
+                      FutureBuilder(
+                        future: getOverallTimelineData(widget.agentEmail, widget.projectId),
+                        builder: (BuildContext context, snapshot){
+                          if(snapshot.hasData){
+                            return buildDataTable(snapshot.data);
+                          } else{
+                            return Text("Loading data");
+                          }
+                        },
+                      ),
+                    ],)
                   ), 
                 ),
               ],)

@@ -41,12 +41,10 @@ class _UserInformationState extends State<LiveProjectAgentList> {
   }
 
   Widget buildDataTable(List<QueryDocumentSnapshot> userStream, List<AgentProjectMap> userList){
-    print("dataTable");
-    List<String> columns = ['projectId', 'Email', 'Online Status', 'Status'];
+    List<String> columns = ['Project Id', 'Agent Name', 'Agent mobile', 'Supervisor Name', 'Supervisor Mobile', 'Online Status', 'Status'];
     Map<String, bool> userStatusMap = {};
     bool userOnline = false;
     userStream.forEach((document){
-      print("inside map");
       var userStream = document.data()! as Map<String, dynamic>;
       var timeStamp = userStream['time_stamp'] as Timestamp;
       var currentTimeStamp = DateTime.now().millisecondsSinceEpoch;
@@ -93,7 +91,7 @@ class _UserInformationState extends State<LiveProjectAgentList> {
     List<DataRow> dataRow = [];
     var indexR = 0;
     agentMap.forEach((agentProjectData) {
-      var cells = [agentProjectData.projectId, agentProjectData.supervisorId];
+      var cells = [agentProjectData.projectId, agentProjectData.agentName, agentProjectData.agentMobileNumber, agentProjectData.supervisorName, agentProjectData.supMobileNumber];
       var userOnline = false;
       if(userStatusMap.containsKey(agentProjectData.agentEmail)){
         userOnline = userStatusMap[agentProjectData.agentEmail]!;
@@ -105,7 +103,7 @@ class _UserInformationState extends State<LiveProjectAgentList> {
 
   List<DataCell> getCells(List<dynamic> cells, bool userOnline, String userEmail) {
     var cellsList = cells.map(
-        (data) => DataCell(Text('$data'))
+        (data) => DataCell(SelectableText('$data'))
       ).toList();
     if (userOnline){
       cellsList.add(

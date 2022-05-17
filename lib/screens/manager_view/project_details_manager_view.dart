@@ -132,7 +132,7 @@ class _ProjectDetailsState extends State<ProjectDetailsAdminView> {
 
   List<DataCell> getCells(List<dynamic> cells) {
     var cellsList = cells.map(
-        (data) => DataCell(Text('$data'))
+        (data) => DataCell(SelectableText('$data'))
       ).toList();
     return cellsList;
   }

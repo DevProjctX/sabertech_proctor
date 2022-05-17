@@ -117,7 +117,7 @@ class _ProjectDetailsState extends State<ProjectDetailsSupView> {
 
   List<DataCell> getCells(List<dynamic> cells) {
     var cellsList = cells.map(
-        (data) => DataCell(Text('$data'))
+        (data) => DataCell(SelectableText('$data'))
       ).toList();
     return cellsList;
   }
