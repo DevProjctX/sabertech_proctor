@@ -3,6 +3,7 @@ import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sabertech_proctor/data/agent_project_data.dart';
 
 class UserInformation extends StatefulWidget {
   @override
@@ -13,11 +14,13 @@ class _UserInformationState extends State<UserInformation> {
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('user-online').snapshots();
 
   Widget buildDataTable(List<QueryDocumentSnapshot> documents) {
-    List<String> columns = ['projectId', 'emailId', 'Timestamp', 'Online Status', 'Last 10 mins status'];
+    List<String> columns = ['projectId', 'Email', 'Online Status', 'Last 10 mins status', 'Overall Status'];
     Timer.periodic(const Duration(hours: 0, minutes: 1, seconds: 0), (Timer t) => setState((){}));
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(documents)
+      rows: getRows(documents),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -27,13 +30,12 @@ class _UserInformationState extends State<UserInformation> {
             // onSort: onSort,
           ))
       .toList();
-
+  var indexR = 0;
   List<DataRow> getRows(List<QueryDocumentSnapshot> users) => users.map((DocumentSnapshot document) {
     var user = document.data()! as Map<String, dynamic>;
     var timeStamp = user['time_stamp'] as Timestamp;
     var currentTimeStamp = DateTime.now().millisecondsSinceEpoch;
-    print(currentTimeStamp);
-    print(timeStamp.millisecondsSinceEpoch);
+    print(document.data());
     bool userOnline = false;
     var userOnlineStatus;
     if(currentTimeStamp - timeStamp.millisecondsSinceEpoch > 60000){
@@ -57,9 +59,9 @@ class _UserInformationState extends State<UserInformation> {
                             ),
                           );
     }
-    final cells = [user['project_id'], user['user_email'], timeStamp.toString()];
-    // print(cells);
-    return DataRow(cells: getCells(cells, userOnline, user['user_email']));
+    final cells = [user['project_id'], user['user_email']];
+    indexR += 1;
+    return DataRow(selected: indexR % 2 == 0 ? true : false, cells: getCells(cells, userOnline, user['user_email']));
   }).toList();
 
   List<DataCell> getCells(List<dynamic> cells, bool userOnline, String userEmail) {
@@ -135,6 +137,53 @@ class _UserInformationState extends State<UserInformation> {
         child: Text('Show Detail'),
       ),
     ));
+    cellsList.add(
+      DataCell(
+        ElevatedButton(
+        style: ElevatedButton.styleFrom(
+                primary: userOnline ? Colors.green : Colors.red,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                textStyle: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold)),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                elevation: 16,
+                child: Container(
+                  width: 500,
+                  child: SingleChildScrollView(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            'Overall details', 
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Center(child:Text('User Mobile: ${userEmail}')),
+                        SizedBox(height: 20),
+                        buildDataTableDialog(),
+                      ],
+                    ),
+                  )
+                ),
+              );
+            },
+          );
+        },
+        child: Text('Show Detail'),
+      ),
+    ));
     // if(userRole == admin){
     //   cellsList.add(
     //     DataCell(DropdownButton<String>(
@@ -169,8 +218,10 @@ class _UserInformationState extends State<UserInformation> {
             ['proctor.com', '20%', '2min'],
             ['youtube.com', '30%', '3min']];
     List<DataRow> dataRow = [];
+    var index = 0;
    data.forEach((e) => {
-      dataRow.add(DataRow(cells: getCellsDialog(e)))
+      index += 1,
+      dataRow.add(DataRow(selected: index % 2 == 0 ? true : false, cells: getCellsDialog(e)))
     });
     return dataRow;
   }
@@ -179,7 +230,9 @@ class _UserInformationState extends State<UserInformation> {
     List<String> columns = ['Url', 'Percentage Spent', 'Time Spend'];
     return DataTable(
       columns: getColumns(columns),
-      rows: getRowsDialog()
+      rows: getRowsDialog(),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -199,11 +252,6 @@ class _UserInformationState extends State<UserInformation> {
             Text(name),
             Spacer(),
             Text(name),
-            // Container(
-            //   decoration: BoxDecoration(color: Colors.yellow[900], borderRadius: BorderRadius.circular(20)),
-            //   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-            //   child: Text('$score'),
-            // ),
           ],
         ),
       ],
@@ -214,32 +262,75 @@ class _UserInformationState extends State<UserInformation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Agents Project Data'),
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: _usersStream,
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
+    TabBar _tabBar = TabBar(
+                onTap: (index) {
+                // Tab index when user select it, it start from zero
+                },
+                tabs: [
+                  Tab(icon: const Text("Project Users", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
+                ],
+                );
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
-            }
+  return DefaultTabController(
+    length: 1,
+    child: Scaffold(
+          appBar: AppBar(
+            bottom: PreferredSize(
+              preferredSize: _tabBar.preferredSize,
+              child: ColoredBox(
+                color: Colors.white,
+                child: _tabBar,
+                )
+            ),
+            title: Text('Users Status', style: TextStyle(fontWeight: FontWeight.w400), ),
+            backgroundColor: Colors.lightBlue,
+          ),
+          body: TabBarView(
+            children: [
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.vertical,
+              //   child: FutureBuilder(
+              //     future: getUsersForProject(widget.),
+              //     builder: (BuildContext context, snapshot){
+              //       if (snapshot.hasError) {
+              //         print(snapshot.error);
+              //         return Text("Something went wrong");
+              //       }
+              //       if (!snapshot.hasData) {
+              //         return Text("No data");
+              //       }
 
-            return buildDataTable(
-              snapshot.data!.docs
-              // .map((DocumentSnapshot document) {
-              // Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                // return buildDataTable(
-                //   data
-                //   // trailing: Text(data['project_id']),
-                // );
-            );
-          },
+              //       if (!snapshot.hasData) {
+              //         return Text("Document does not exist");
+              //       }
+              //       if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+              //         return buildDataTable(snapshot.data);
+              //       }
+              //       else{
+              //         return Text("Loading data");
+              //           }
+              //         }
+              //     ),
+              // ),
+              StreamBuilder<QuerySnapshot>(
+                stream: _usersStream,
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Loading");
+                  }
+
+                  return buildDataTable(
+                    snapshot.data!.docs
+                  );
+                },
+              )
+            ],
+          ),
         )
-    );
+      );
   }
 }

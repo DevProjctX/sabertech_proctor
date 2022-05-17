@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:sabertech_proctor/models/project.dart';
-import 'package:sabertech_proctor/screens/project_agent_list.dart';
 import 'package:sabertech_proctor/screens/supervisor_view/supervisor_project_agent_list.dart';
+import 'package:sabertech_proctor/screens/user_online_status.dart';
 
 import '../../data/agent_project_data.dart';
 
@@ -55,11 +55,39 @@ class _ProjectDetailsState extends State<ProjectDetailsSupView> {
     );
   }
 
-  Widget buildDataTable(userData) {
+  Widget buildDataTable(projectData) {
+    final ButtonStyle styleBlue = ElevatedButton.styleFrom(primary: Colors.blueAccent);
+    final ButtonStyle styleRed = ElevatedButton.styleFrom(primary: Colors.redAccent);
     final columns = ['Project Property', 'Details'];
-    return DataTable(
-      columns: getColumns(columns),
-      rows: getRows(userData)
+    var projectDataCast = projectData as Project;
+    return Column(
+      children: [
+        DataTable(
+          columns: getColumns(columns),
+          rows: getRows(projectData),
+          showBottomBorder: true,
+          headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225))
+        ),
+        SizedBox(height: 10,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children:[
+            SizedBox(width: 10,),
+            ElevatedButton(
+              style: styleBlue,
+              child: Text("View Agents"),
+              onPressed: () =>{
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context)=> UserInformation()
+                  )
+                )
+              },
+            ),
+          ]
+        )
+      ],
     );
   }
 
@@ -72,17 +100,17 @@ class _ProjectDetailsState extends State<ProjectDetailsSupView> {
 
   List<DataRow> getRows(Project project){
     final rows = [
+      ["Project Id", project.projectId],
       ["Project Name", project.projectName],
       ["Project Description", project.projectDetails],
       ["Project Start Time", project.projectStartTime],
-      ["Google Meet Link", "meet.google.com"],
-      ["Agent Login Id", "abc123"],
-      ["Supervisor Contact", "9897491821"],
-      ["Supervisor Name", "Raj12"]
+      ["Project Status", project.status]
     ];
     List<DataRow> dataRows = [];
+    var index = 0;
     rows.forEach((element) {
-      dataRows.add(DataRow(cells:getCells(element)));
+      index += 1;
+      dataRows.add(DataRow(selected: index % 2 == 0 ? true : false, cells:getCells(element)));
     });
     return dataRows;
   }

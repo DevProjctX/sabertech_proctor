@@ -7,12 +7,12 @@ import 'package:sabertech_proctor/models/users.dart' as firestore_user;
 import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:flutter/material.dart';
 
-class SortablePage extends StatefulWidget {
+class UserPage extends StatefulWidget {
   @override
   _SortablePageState createState() => _SortablePageState();
 }
 
-class _SortablePageState extends State<SortablePage> {
+class _SortablePageState extends State<UserPage> {
   late List<firestore_user.User> users;
   int? sortColumnIndex;
   bool isAscending = false;
@@ -37,27 +37,33 @@ class _SortablePageState extends State<SortablePage> {
       return dataDocs;
     }
 
+  TabBar _tabBar = TabBar(
+                onTap: (index) {
+                // Tab index when user select it, it start from zero
+                },
+                tabs: [
+                  Tab(icon: const Text("Users", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
+                ],
+                );
   @override
   Widget build(BuildContext context) => DefaultTabController(
-  length: 2,
+  length: 1,
   child: Scaffold(
           appBar: AppBar(
-            bottom: TabBar(
-              onTap: (index) {
-              // Tab index when user select it, it start from zero
-              },
-              tabs: [
-                Tab(icon: const Text("Upcoming Project")),
-                Tab(icon: const Text("Completed Project")),
-              ],
-            ),
-            title: Text('Project Tabs'),
+            bottom: PreferredSize(
+              preferredSize: _tabBar.preferredSize,
+              child: ColoredBox(
+                color: Colors.white,
+                child: _tabBar,
+                )),
+            title: Text('User Details', style: TextStyle(fontWeight: FontWeight.w400), ),
+            // backgroundColor: Color.fromARGB(255, 204, 240, 237),
           ),
           body: FutureBuilder(
             future: getUserRole(uid),
             builder: (BuildContext context, snapshot){
-              print("userRole user_page:$userRole");
-              print("snapshot data user_page:${snapshot.data}");
+              // print("userRole user_page:$userRole");
+              // print("snapshot data user_page:${snapshot.data}");
               if(userRole == 'admin' && snapshot.hasData){
                 return TabBarView(
                   children: [
@@ -65,23 +71,12 @@ class _SortablePageState extends State<SortablePage> {
                       future: getUsers(),
                       builder: (BuildContext context, snapshot){
                         if(snapshot.hasData){
-                          print(snapshot);
                           return buildDataTable(snapshot.data as List<firestore_user.User>);
                         } else{
                           return Text("Loading data");
                         }
                       },
-                    ),
-                    FutureBuilder(
-                      future: getUsers(),
-                      builder: (BuildContext context, snapshot){
-                        if(snapshot.hasData){
-                          return buildDataTable(snapshot.data as List<firestore_user.User>);
-                        } else{
-                          return Text("Loading data");
-                        }
-                      },
-                    ),
+                    )
                   ],
                 );
               } else {return const Text("Not authorised");}
@@ -92,13 +87,15 @@ class _SortablePageState extends State<SortablePage> {
   Widget buildDataTable(List<firestore_user.User> userData) {
     List<String> columns = [];
     if(userRole == admin){
-      columns = ['name', 'emailId', 'Role', 'Select role'];
+      columns = ['Name', 'Mobile', 'Role', 'Select role'];
     } else if(userRole == supervisor){
-      columns = ['name', 'emailId', 'Role'];
+      columns = ['Name', 'Email', 'Role'];
     }
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(userData)
+      rows: getRows(userData),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -108,23 +105,25 @@ class _SortablePageState extends State<SortablePage> {
             // onSort: onSort,
           ))
       .toList();
-
+  var index = 0;
   List<DataRow> getRows(List<firestore_user.User> users) => users.map((firestore_user.User user) {
-        final cells = [user.name, user.emailId, user.userRole];
-        return DataRow(cells: getCells(cells));
+        final cells = [user.name, user.mobileNumber, user.userRole];
+        index += 1;
+        return DataRow(selected: index % 2 == 0 ? true : false, cells: getCells(cells, user));
       }).toList();
 
-  List<DataCell> getCells(List<dynamic> cells) {
+  List<DataCell> getCells(List<dynamic> cells, firestore_user.User user) {
     var cellsList = cells.map(
         (data) => DataCell(Text('$data'))
       ).toList();
     if(userRole == admin){
       cellsList.add(
         DataCell(DropdownButton<String>(
-          value: userRole,
+          value: user.userRole,
           onChanged: (String? newRole) {
+            print("changing roles to $newRole");
             setState(() {
-              changeUserRole(newRole?? 'agent');
+              changeUserRole(newRole?? 'agent', user.userId);
             });
           },
           items: firestore_user.User.userRolesList.map<DropdownMenuItem<String>>((String value) {

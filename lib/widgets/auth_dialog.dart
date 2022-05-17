@@ -94,133 +94,133 @@ class _AuthDialogState extends State<AuthDialog> {
                   ),
                 ),
                 SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    'Email address',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.subtitle2!.color,
-                      fontSize: 18,
-                      // fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold,
-                      // letterSpacing: 3,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    right: 20,
-                  ),
-                  child: TextField(
-                    focusNode: textFocusNodeEmail,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    controller: textControllerEmail,
-                    autofocus: false,
-                    onChanged: (value) {
-                      setState(() {
-                        _isEditingEmail = true;
-                      });
-                    },
-                    onSubmitted: (value) {
-                      textFocusNodeEmail.unfocus();
-                      FocusScope.of(context)
-                          .requestFocus(textFocusNodePassword);
-                    },
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.blueGrey[800]!,
-                          width: 3,
-                        ),
-                      ),
-                      filled: true,
-                      hintStyle: new TextStyle(
-                        color: Colors.blueGrey[300],
-                      ),
-                      hintText: "Email",
-                      fillColor: Colors.white,
-                      errorText: _isEditingEmail
-                          ? _validateEmail(textControllerEmail.text)
-                          : null,
-                      errorStyle: TextStyle(
-                        fontSize: 12,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    bottom: 8,
-                  ),
-                  child: Text(
-                    'Password',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.subtitle2!.color,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      // letterSpacing: 3,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    right: 20,
-                  ),
-                  child: TextField(
-                    focusNode: textFocusNodePassword,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
-                    controller: textControllerPassword,
-                    obscureText: true,
-                    autofocus: false,
-                    onChanged: (value) {
-                      setState(() {
-                        _isEditingPassword = true;
-                      });
-                    },
-                    onSubmitted: (value) {
-                      textFocusNodePassword.unfocus();
-                      FocusScope.of(context)
-                          .requestFocus(textFocusNodePassword);
-                    },
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.blueGrey[800]!,
-                          width: 3,
-                        ),
-                      ),
-                      filled: true,
-                      hintStyle: new TextStyle(
-                        color: Colors.blueGrey[300],
-                      ),
-                      hintText: "Password",
-                      fillColor: Colors.white,
-                      errorText: _isEditingPassword
-                          ? _validatePassword(textControllerPassword.text)
-                          : null,
-                      errorStyle: TextStyle(
-                        fontSize: 12,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //     left: 20.0,
+                //     bottom: 8,
+                //   ),
+                //   child: Text(
+                //     'Email address',
+                //     textAlign: TextAlign.left,
+                //     style: TextStyle(
+                //       color: Theme.of(context).textTheme.subtitle2!.color,
+                //       fontSize: 18,
+                //       // fontFamily: 'Montserrat',
+                //       fontWeight: FontWeight.bold,
+                //       // letterSpacing: 3,
+                //     ),
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //     left: 20.0,
+                //     right: 20,
+                //   ),
+                //   child: TextField(
+                //     focusNode: textFocusNodeEmail,
+                //     keyboardType: TextInputType.emailAddress,
+                //     textInputAction: TextInputAction.next,
+                //     controller: textControllerEmail,
+                //     autofocus: false,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         _isEditingEmail = true;
+                //       });
+                //     },
+                //     onSubmitted: (value) {
+                //       textFocusNodeEmail.unfocus();
+                //       FocusScope.of(context)
+                //           .requestFocus(textFocusNodePassword);
+                //     },
+                //     style: TextStyle(color: Colors.black),
+                //     decoration: InputDecoration(
+                //       border: new OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //         borderSide: BorderSide(
+                //           color: Colors.blueGrey[800]!,
+                //           width: 3,
+                //         ),
+                //       ),
+                //       filled: true,
+                //       hintStyle: new TextStyle(
+                //         color: Colors.blueGrey[300],
+                //       ),
+                //       hintText: "Email",
+                //       fillColor: Colors.white,
+                //       errorText: _isEditingEmail
+                //           ? _validateEmail(textControllerEmail.text)
+                //           : null,
+                //       errorStyle: TextStyle(
+                //         fontSize: 12,
+                //         color: Colors.redAccent,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(height: 20),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //     left: 20.0,
+                //     bottom: 8,
+                //   ),
+                //   child: Text(
+                //     'Password',
+                //     textAlign: TextAlign.left,
+                //     style: TextStyle(
+                //       color: Theme.of(context).textTheme.subtitle2!.color,
+                //       fontSize: 18,
+                //       fontWeight: FontWeight.bold,
+                //       // letterSpacing: 3,
+                //     ),
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //     left: 20.0,
+                //     right: 20,
+                //   ),
+                //   child: TextField(
+                //     focusNode: textFocusNodePassword,
+                //     keyboardType: TextInputType.text,
+                //     textInputAction: TextInputAction.done,
+                //     controller: textControllerPassword,
+                //     obscureText: true,
+                //     autofocus: false,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         _isEditingPassword = true;
+                //       });
+                //     },
+                //     onSubmitted: (value) {
+                //       textFocusNodePassword.unfocus();
+                //       FocusScope.of(context)
+                //           .requestFocus(textFocusNodePassword);
+                //     },
+                //     style: TextStyle(color: Colors.black),
+                //     decoration: InputDecoration(
+                //       border: new OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10),
+                //         borderSide: BorderSide(
+                //           color: Colors.blueGrey[800]!,
+                //           width: 3,
+                //         ),
+                //       ),
+                //       filled: true,
+                //       hintStyle: new TextStyle(
+                //         color: Colors.blueGrey[300],
+                //       ),
+                //       hintText: "Password",
+                //       fillColor: Colors.white,
+                //       errorText: _isEditingPassword
+                //           ? _validatePassword(textControllerPassword.text)
+                //           : null,
+                //       errorStyle: TextStyle(
+                //         fontSize: 12,
+                //         color: Colors.redAccent,
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 // Padding(
                 //   padding: const EdgeInsets.all(20.0),
                 //   child: Row(

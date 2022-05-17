@@ -4,16 +4,16 @@ import 'package:sabertech_proctor/models/agent_project_view.dart';
 import 'package:sabertech_proctor/screens/project_details.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 
-import '../constants.dart';
+import '/constants.dart';
 
-class AgentProjectScreen extends StatefulWidget{
+class AgentPastProjectScreen extends StatefulWidget{
   // var id;
 
-  const AgentProjectScreen({required Key key}) : super(key: key);
+  const AgentPastProjectScreen({required Key key}) : super(key: key);
   @override
   _AgentProjectScreenState createState() => _AgentProjectScreenState();
 }
-class _AgentProjectScreenState extends State<AgentProjectScreen> {
+class _AgentProjectScreenState extends State<AgentPastProjectScreen> {
   @override
   Widget build(BuildContext context) {
   List<DataColumn> getColumns(List<String> columns) => columns
@@ -28,16 +28,7 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
 
 
   List<DataCell> getCells(List<dynamic> cells, AgentProjectView project){
-    // var textCellData = cells.map((data) => DataCell(Text('$data'))).toList();
-    var textCellData = cells.map((data) => 
-      DataCell(
-        data.toString() == projectStatusLive ?
-          Text('$data', style: TextStyle(color:Colors.redAccent, fontWeight: FontWeight.w800 ))
-        : data.toString() == projectStatusEnded ?
-          Text('$data', style: TextStyle(color:Colors.redAccent.shade100, fontWeight: FontWeight.w400 ))
-        : Text('$data')
-      )
-    ).toList();
+    var textCellData = cells.map((data) => DataCell(Text('$data'))).toList();
       textCellData.add(
       DataCell(
         project.agentStatus == notRegistered ?
@@ -74,9 +65,9 @@ class _AgentProjectScreenState extends State<AgentProjectScreen> {
   Widget buildDataTable(projectData) {
     List<String> columns = [];
     if(userRole == admin || userRole == supervisor){
-      columns = ['Project Name', 'Project Status', 'Project Date', 'View Agents'];
+      columns = ['Project Name', 'Project Status', 'Duration', 'View Agents'];
     } else{
-      columns = ['Project Name', 'Project Status', 'Project Date', 'Status', 'View Project'];
+      columns = ['Project Name', 'Project Status', 'Duration', 'Status', 'View Project'];
     }
     return DataTable(
       columns: getColumns(columns),
@@ -91,13 +82,13 @@ TabBar _tabBar = TabBar(
                 // Tab index when user select it, it start from zero
                 },
                 tabs: [
-                  Tab(icon: const Text("Signed Up Project", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
-                  Tab(icon: const Text("Floated Project", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
+                  Tab(icon: const Text("Signed Up Project", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),))
+                  // Tab(icon: const Text("Floated Project", style: TextStyle(color: Color.fromARGB(255, 9, 73, 100)),)),
                 ],
                 );
 
   return DefaultTabController(
-  length: 2,
+  length: 1,
   child: Scaffold(
           appBar: AppBar(
             // bottom: TabBar(
@@ -117,12 +108,12 @@ TabBar _tabBar = TabBar(
                 child: _tabBar,
                 )),
             title: Text('Project Tabs', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400), ),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: Color.fromARGB(207, 204, 240, 237),
           ),
           body: TabBarView(
             children: [
               FutureBuilder(
-                future: getAgentSignedUpProjectView(uid ?? ""),
+                future: getAgentAllSignedUpProjectView(uid ?? ""),
                 builder: (BuildContext context, snapshot){
                   if(snapshot.hasData){
                     return buildDataTable(snapshot.data);
@@ -130,17 +121,17 @@ TabBar _tabBar = TabBar(
                     return Text("Loading data");
                   }
                 },
-              ),
-              FutureBuilder(
-                future: getUnsignedUpcomingProjectAgent(uid ?? ""),
-                builder: (BuildContext context, snapshot){
-                  if(snapshot.hasData){
-                    return buildDataTable(snapshot.data);
-                  } else{
-                    return Text("Loading data");
-                  }
-                },
-              ),
+              )
+              // FutureBuilder(
+              //   future: getAgentAllSignedUpProjectView(uid ?? ""),
+              //   builder: (BuildContext context, snapshot){
+              //     if(snapshot.hasData){
+              //       return buildDataTable(snapshot.data);
+              //     } else{
+              //       return Text("Loading data");
+              //     }
+              //   },
+              // ),
             ],
           ),
         ));

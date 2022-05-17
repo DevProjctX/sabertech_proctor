@@ -3,7 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AgentProjectMap{
   final String agentId;
   final String agentEmail;
+  final String? agentName;
   final String? supervisorId;
+  final String? supervisorName;
+  final String? supMobileNumber;
+  final String? agentMobileNumber;
   final String projectId;
   final String agentStatus;
   final String? approverEmail;
@@ -21,6 +25,10 @@ class AgentProjectMap{
     this.supervisorId, 
     required this.projectId,
     required this.agentStatus,
+    this.agentName,
+    this.agentMobileNumber,
+    this.supervisorName,
+    this.supMobileNumber,
     this.approverEmail,
     this.agentProjectActivityScore,
     this.agentLoginTime,
@@ -46,6 +54,10 @@ class AgentProjectMap{
         agentLoginId: json['agent_login_id'] as String?,
         agentLoginCode: json['agent_login_code'] as String?,
         googleMeetLink: json['google_meet_link'] as String?,
+        agentName: json['agent_name'] as String?,
+        supervisorName: json['supervisor_name'] as String?,
+        supMobileNumber: json['supervisor_number'] as String?,
+        agentMobileNumber: json['agent_number'] as String?,
       );
 
   Map<String, Object?> toJson() {

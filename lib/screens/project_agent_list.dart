@@ -42,10 +42,12 @@ class _ProjectAgentListScreenState extends State<ProjectAgentListScreen> {
   }
               
   Widget buildDataTable(userData) {
-    final columns = ['agentId', 'emailId', 'Status', 'Approve/Reject'];
+    final columns = ['Agent Id', 'Email', 'Status', 'Approve/Reject'];
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(userData)
+      rows: getRows(userData),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -56,10 +58,12 @@ class _ProjectAgentListScreenState extends State<ProjectAgentListScreen> {
           ))
       .toList();
 
+  var index = 0;
   List<DataRow> getRows(List<AgentProjectMap> agents) => agents.map((AgentProjectMap user) {
         final cells = [user.agentId, user.agentEmail, user.agentStatus];
         print(cells);
-        return DataRow(cells: getCells(cells, user.agentId));
+        index += 1;
+        return DataRow(selected: index % 2 == 0 ? true : false, cells: getCells(cells, user.agentId));
       }).toList();
 
   List<DataCell> getCells(List<dynamic> cells, String agentId) {
@@ -79,6 +83,7 @@ class _ProjectAgentListScreenState extends State<ProjectAgentListScreen> {
                     setState(() {})
               },
             ),
+            SizedBox(width: 10,),
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.red),
               child: Text("Reject"),

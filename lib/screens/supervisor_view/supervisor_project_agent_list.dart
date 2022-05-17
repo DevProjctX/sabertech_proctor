@@ -19,7 +19,6 @@ class _ProjectAgentListSupViewState extends State<ProjectAgentListSupView> {
   var projectAgentMap;
   @override
   Widget build(BuildContext context) {
-    print("ProjectAgentListSupView");
     return FutureBuilder(
           future: getUsersForProjectForSup(widget.id),
           builder: (BuildContext context, snapshot){
@@ -45,10 +44,12 @@ class _ProjectAgentListSupViewState extends State<ProjectAgentListSupView> {
   }
               
   Widget buildDataTable(userData) {
-    final columns = ['agentId', 'emailId', 'Status', 'Edit Details'];
+    final columns = ['Agent Id', 'Email', 'Status', 'Edit Details'];
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(userData)
+      rows: getRows(userData),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -61,7 +62,6 @@ class _ProjectAgentListSupViewState extends State<ProjectAgentListSupView> {
 
   List<DataRow> getRows(List<AgentProjectMap> agents) => agents.map((AgentProjectMap user) {
         final cells = [user.agentId, user.agentEmail, user.agentStatus];
-        print(cells);
         return DataRow(cells: getCells(cells, user.agentId, user));
       }).toList();
 

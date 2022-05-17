@@ -7,14 +7,14 @@ import 'package:sabertech_proctor/widgets/date_time_picker.dart';
 
 // import '../widgets/date_time_picker.dart';
 
-class FormWidgetsDemo extends StatefulWidget {
-  const FormWidgetsDemo({Key? key}) : super(key: key);
+class CreateProject extends StatefulWidget {
+  const CreateProject({Key? key}) : super(key: key);
 
   @override
   _FormWidgetsDemoState createState() => _FormWidgetsDemoState();
 }
 
-class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
+class _FormWidgetsDemoState extends State<CreateProject> {
   final _formKey = GlobalKey<FormState>();
   String projectName = '';
   String description = '';
@@ -33,7 +33,7 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
     String projectId;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Form widgets'),
+            title: const Text('Create Project'),
           ),
           body: Form(
             key: _formKey,
@@ -150,7 +150,7 @@ class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
                               projectId:projectId,
                               projectName: projectName,
                               projectDetails: description,
-                              status: 'CREATED',
+                              status: 'Created',
                               numAgents: numAgents,
                               numStudents: numStudents,
                               numSupervisor: numSupervisor,

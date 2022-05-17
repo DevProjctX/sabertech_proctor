@@ -58,9 +58,9 @@ class _ProjectDetailsState extends State<ProjectAgentDetailSupView> {
               }
             }
           ),
-          SizedBox(
-            height: 40,
-          ),
+          // SizedBox(
+          //   height: 40,
+          // ),
           ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.blue),
               child: Text("Save"),
@@ -77,7 +77,9 @@ class _ProjectDetailsState extends State<ProjectAgentDetailSupView> {
     final columns = ['Project Property', 'Details'];
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(userData.data[0], userData.data[1])
+      rows: getRows(userData.data[0], userData.data[1]),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 

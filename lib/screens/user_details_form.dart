@@ -29,7 +29,7 @@ class _UserDetailFormState extends State<UserDetailForm> {
   Widget build(BuildContext context) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Form widgets'),
+            title: const Text('User Details Form'),
           ),
           body: Form(
             autovalidateMode: AutovalidateMode.always,

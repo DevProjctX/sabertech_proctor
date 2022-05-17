@@ -8,3 +8,5 @@ const notRegistered = 'notRegistered';
 const googleMeetText = "Google Meet Link";
 const agentLoginCodeText = "Agent Login Code";
 const agentLoginIdText = "Agent Login Id";
+const projectStatusLive = "Live";
+const projectStatusEnded = "Ended";

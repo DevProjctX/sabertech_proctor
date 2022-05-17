@@ -60,10 +60,12 @@ class ControlUserProjectTimeline extends StatelessWidget{
           }).toList();
 
       Widget buildDataTable(projectData) {
-        final columns = ['Tabs', 'timestamp', 'emailId'];
+        final columns = ['Tabs', 'timestamp', 'Email'];
         return DataTable(
           columns: getColumns(columns),
-          rows: getRows(projectData)
+          rows: getRows(projectData),
+          showBottomBorder: true,
+          headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
         );
       }
 

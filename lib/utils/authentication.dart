@@ -60,8 +60,8 @@ Future<String?> getUserRole(String? uid) async{
   return userRole;
 }
 
-Future<String?> changeUserRole(String newRole) async {
-  (await FirebaseFirestore.instance.collection('users').doc(uid).update({'user_role':newRole})
+Future<String?> changeUserRole(String newRole, String selectedUid) async {
+  (await FirebaseFirestore.instance.collection('users').doc(selectedUid).update({'user_role':newRole})
     .then((value) {
       print("role changed successfully");
       userRole = newRole;

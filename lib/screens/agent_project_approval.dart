@@ -18,38 +18,49 @@ class _AgentProjectApprovalScreenState extends State<AgentProjectApprovalScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Agent Approval'),
-          ),
-        body: FutureBuilder(
-          future: getUsersForProjectApproval(widget.id),
-          builder: (BuildContext context, snapshot){
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return Text("Something went wrong");
-            }
-            if (!snapshot.hasData) {
-              return Text("No data");
-            }
 
-            if (!snapshot.hasData) {
-              return Text("Document does not exist");
-            }
-            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-              return buildDataTable(snapshot.data);
-            }
-            else{
-              return Text("Loading data");
-            }
-          }
-        ),
+          title: Text('Agent Approval', style: TextStyle( fontWeight: FontWeight.w400), ),
+          ),
+        body: Row( // a dirty trick to make the DataTable fit width
+      children: <Widget>[ 
+        Expanded(
+          child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: FutureBuilder(
+            future: getUsersForProjectApproval(widget.id),
+            builder: (BuildContext context, snapshot){
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return Text("Something went wrong");
+              }
+              if (!snapshot.hasData) {
+                return Text("No data");
+              }
+
+              if (!snapshot.hasData) {
+                return Text("Document does not exist");
+              }
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                return buildDataTable(snapshot.data);
+              }
+              else{
+                return Text("Loading data");
+                  }
+                }
+              ),
+          )
+        )
+      ])
       );
   }
               
   Widget buildDataTable(userData) {
-    final columns = ['agentId', 'emailId', 'Status', 'Approve/Reject'];
+    final columns = ['Agent Id', 'Email', 'Status', 'Approve/Reject'];
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(userData)
+      rows: getRows(userData),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -59,11 +70,11 @@ class _AgentProjectApprovalScreenState extends State<AgentProjectApprovalScreen>
             // onSort: onSort,
           ))
       .toList();
-
+  var index = 0;
   List<DataRow> getRows(List<AgentProjectMap> agents) => agents.map((AgentProjectMap user) {
         final cells = [user.agentId, user.agentEmail, user.agentStatus];
-        print(cells);
-        return DataRow(cells: getCells(cells, user.agentId));
+        index += 1;
+        return DataRow(selected: index % 2 == 0 ? true : false, cells: getCells(cells, user.agentId));
       }).toList();
 
   List<DataCell> getCells(List<dynamic> cells, String agentId) {
@@ -83,8 +94,9 @@ class _AgentProjectApprovalScreenState extends State<AgentProjectApprovalScreen>
                     setState(() {})
               },
             ),
+            SizedBox(width: 10,),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Colors.red),
+              style: ElevatedButton.styleFrom(primary: Colors.redAccent),
               child: Text("Reject"),
               onPressed: () =>{
                     rejectAgent(agentId, widget.id),

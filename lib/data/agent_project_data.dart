@@ -1,9 +1,12 @@
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sabertech_proctor/constants.dart';
 import 'package:sabertech_proctor/models/agent_project_data.dart';
 import 'package:sabertech_proctor/models/agent_project_view.dart';
 import 'package:sabertech_proctor/models/project.dart';
+import 'package:sabertech_proctor/models/project_timeline_view.dart';
 import 'package:sabertech_proctor/utils/authentication.dart';
 import 'package:sabertech_proctor/models/users.dart' as firestore_user;
 
@@ -55,7 +58,7 @@ List<String> decodeProjectHash(String hashString){
   return hashString.split('.');
 }
 
-Future<void> projectSignUp(String uid, String projectId) async{
+Future<void> projectSignUp(String uid, String projectId, String? supUid) async{
   final userProjectRef = FirebaseFirestore.instance.collection('agent-project-map');
   List<AgentProjectMap> dataDocs = [];
   var projectAgentHash = createUidProjectHash(uid, projectId);
@@ -63,7 +66,8 @@ Future<void> projectSignUp(String uid, String projectId) async{
     agentId: uid,
     agentEmail: userEmail ?? "",
     projectId: projectId,
-    agentStatus: waiting
+    agentStatus: waiting,
+    supervisorId: supUid
   );
   return await userProjectRef.doc(projectAgentHash).set(projectAgentMap.toJson());
 }
@@ -165,6 +169,35 @@ Future<List<AgentProjectView>> getAgentSignedUpProjectView(String uid) async{
   return agentProjectView;
 }
 
+Future<List<AgentProjectView>> getAgentAllSignedUpProjectView(String uid) async{
+  List<AgentProjectView> agentProjectView = [];
+  await getAllProjects().then(
+    (project) async => {
+      await Future.wait( project.map(
+        (element) async { 
+          AgentProjectView singleProjectView;
+          await getAgentProjectData(uid, element.projectId).then(
+            (agentProject) => {
+              singleProjectView = AgentProjectView(
+                projectName: element.projectName, 
+                projectId: element.projectId, 
+                agentStatus: agentProject?.agentStatus ?? notRegistered, 
+                projectStartTime: element.projectStartTime, 
+                projectStatus: element.status, 
+                duration: element.duration, 
+                projectDetails: element.projectDetails
+              ),
+              if(singleProjectView.agentStatus != notRegistered){
+                agentProjectView.add(singleProjectView)
+              }
+            });
+        }
+      )
+      )}
+  );
+  return agentProjectView;
+}
+
 Future<List<AgentProjectView>> getUnsignedUpcomingProjectAgent(String uid) async{
   List<AgentProjectView> agentProjectView = [];
   await getAllActiveProjects().then(
@@ -236,9 +269,8 @@ Future<List<Project>> getAllEndedProjects() async {
         toFirestore: (project, _) => project.toJson(),
       );
       List<Project> dataDocs = [];
-      (await projectRef.limit(10).get()
+      (await projectRef.limit(10).where('project_date', isLessThanOrEqualTo:timeStampYesterday()).orderBy('project_date').get()
         .then((snapshot) => snapshot.docs.forEach((projectDoc) => {
-          // print(projectDoc.data());
           dataDocs.add(projectDoc.data())
         })));
       return dataDocs;
@@ -275,6 +307,21 @@ Future<Project?> getProjectById(String id) async {
       return dataDocs;
     }
 
+Future<void> startProject(String projectId) async{
+  final projectRef = FirebaseFirestore.instance.collection('projects');
+  return await projectRef.doc(projectId).update(
+    {'project_started_time': DateTime.now(), 'status': "Live"}
+  );
+}
+
+Future<void> endProject(String projectId) async{
+  final projectRef = FirebaseFirestore.instance.collection('projects');
+  return await projectRef.doc(projectId).update({
+    'project_ended_time': DateTime.now(),
+    'status': "Ended"
+    });
+}
+
 Future<firestore_user.User?> getUserDetailsByUid(String id) async {
     final userRef = FirebaseFirestore.instance.collection('users').withConverter<firestore_user.User>(
       fromFirestore: (snapshot, _) => firestore_user.User.fromJson(snapshot.data()!),
@@ -284,6 +331,19 @@ Future<firestore_user.User?> getUserDetailsByUid(String id) async {
       (await userRef.doc(id).get()
         .then((snapshot) => 
           dataDocs = snapshot.data()
+        ));
+      return dataDocs;
+}
+
+Future<firestore_user.User?> getUserDetailsByMobile(String mobilePhone) async {
+    final userRef = FirebaseFirestore.instance.collection('users').withConverter<firestore_user.User>(
+      fromFirestore: (snapshot, _) => firestore_user.User.fromJson(snapshot.data()!),
+      toFirestore: (user, _) => user.toJson(),
+    );
+      firestore_user.User? dataDocs;
+      (await userRef.where('mobile_number', isEqualTo:mobilePhone).get()
+        .then((snapshot) => 
+          dataDocs = snapshot.docs.first.data()
         ));
       return dataDocs;
 }
@@ -298,7 +358,6 @@ Future<void> updateAgentProjectDetails(String projectId, AgentProjectMap agentPr
   //   projectId: projectId,
   //   agentStatus: waiting
   // );
-  print('$gMeetLink $agentLoginCode $agentLoginId');
   return await userProjectRef.doc(projectAgentHash).update({'google_meet_link': gMeetLink, 'agent_login_code':agentLoginCode, 'agent_login_id':agentLoginId});
 }
 
@@ -307,3 +366,52 @@ Future<void> updateAgentProjectDetails(String projectId, AgentProjectMap agentPr
 //   var projectAgentHash = createUidProjectHash(uid, projectId);
 //   return await userProjectRef.doc(projectAgentHash).update({'agent_status': approved, 'approver_email': userEmail});
 // }
+
+Future<void> uploadSupAgentMap(Map<String, String> agentSupMap, String projectId, String? uploadedByEmail) async{
+  final agentSupMapRef = FirebaseFirestore.instance.collection('agent-sup-map');
+  Map<String, dynamic>uploadDoc = {};
+  uploadDoc['agent_sup_map'] = agentSupMap;
+  uploadDoc['timestamp'] = DateTime.now();
+  uploadDoc['project_id'] = projectId;
+  uploadDoc['uploaded_by'] = uploadedByEmail ?? "";
+  return await agentSupMapRef.doc().set(uploadDoc);
+}
+
+
+Future<firestore_user.User?> getUserDetailsByEmail(String email) async {
+    final userRef = FirebaseFirestore.instance.collection('users').withConverter<firestore_user.User>(
+      fromFirestore: (snapshot, _) => firestore_user.User.fromJson(snapshot.data()!),
+      toFirestore: (user, _) => user.toJson(),
+    );
+      firestore_user.User? dataDocs;
+      (await userRef.where('email_id', isEqualTo:email).get()
+        .then((snapshot) => 
+          dataDocs = snapshot.docs.first.data()
+        ));
+      return dataDocs;
+}
+
+Future<TimelineView?> getLast10MinsData(String email, String projectId) async{
+  var userDetails = await getUserDetailsByEmail(email);
+  var uid = userDetails!.userId;
+  var idForDoc = uid+'_'+projectId;
+  final timeLineView10MinRef = FirebaseFirestore.instance.collection('user-timeline-view-10-mins')
+  .withConverter<TimelineView>(
+    fromFirestore: (snapshot, _) => TimelineView.fromJson(snapshot.data()!), 
+    toFirestore: (user, _) => user.toJson(),
+  );
+  var timelineData = await timeLineView10MinRef.doc(idForDoc).get();
+  return timelineData.data();
+}
+
+Future<TimelineView?> getOverallTimelineData(String email, String projectId) async{
+  var userDetails = await getUserDetailsByEmail(email);
+  var uid = userDetails!.userId;
+  var idForDoc = uid+'_'+projectId;
+  final timeLineViewOverallRef = FirebaseFirestore.instance.collection('user-timeline-view-overall')
+  .withConverter<TimelineView>(
+    fromFirestore: (snapshot, _) => TimelineView.fromJson(snapshot.data()!), 
+    toFirestore: (user, _) => user.toJson(),
+  );
+  return (await timeLineViewOverallRef.doc(idForDoc).get()).data();
+}

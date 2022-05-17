@@ -12,6 +12,8 @@ class Project{
   final String projectDetails;
   final DateTime projectStartTime;
   final DateTime projectEndTime;
+  final DateTime? projectStartedTime;
+  final DateTime? projectEndedTime;
 
 
   Project({
@@ -25,8 +27,10 @@ class Project{
     required this.projectStartTime,
     required this.projectEndTime,
     required this.projectDetails,
-    this.projectDate
-    });
+    this.projectDate,
+    this.projectStartedTime,
+    this.projectEndedTime
+  });
 
   Project.fromJson(Map<String, Object?> json)
     : this(
@@ -39,6 +43,8 @@ class Project{
         numSupervisor: json['num_supervisor'] as int,
         projectStartTime: (json['project_start_time'] as Timestamp).toDate(),
         projectEndTime: (json['project_end_time'] as Timestamp).toDate(),
+        projectStartedTime: (json['project_started_time'] as Timestamp?)?.toDate(),
+        projectEndedTime: (json['project_ended_time'] as Timestamp?)?.toDate(),
         projectDetails: json['project_details'] as String,
         projectDate: (json['project_date'] as Timestamp).toDate(),
       );
@@ -54,8 +60,10 @@ class Project{
       'num_supervisor': numSupervisor,
       'project_start_time': projectStartTime,
       'project_end_time': projectEndTime,
+      'project_started_time': projectStartedTime,
+      'project_ended_time': projectEndedTime,
       'project_details': projectDetails,
-      'project_date': projectDate
+      'project_date': projectDate,
     };
   }
 }

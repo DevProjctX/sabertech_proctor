@@ -27,28 +27,16 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
           label: Text(column),
         ))
     .toList();
-  print(userRole);
   return Scaffold(
           appBar: AppBar(
             title: Text('Project Details Page'),
           ),
           body: Column(
             children: [
-              // FutureBuilder(
-              //   future: getProjectById(widget.id),
-              //   builder: (BuildContext context, snapshot){
-              //     if(snapshot.hasData){
-              //       return buildDataTable(snapshot.data);
-              //     } else{
-              //       return Text("Loading data");
-              //     }
-              //   },
-              // ),
               FutureBuilder(
                   future: getUsersForProject(widget.id),
                   builder: (BuildContext context, snapshot){
                     if (snapshot.hasError) {
-                      print(snapshot.error);
                       return Text("Something went wrong");
                     }
                     if (!snapshot.hasData) {
@@ -72,10 +60,12 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   }
 
   Widget buildDataTableUsers(userData) {
-    final columns = ['agentId', 'emailId', 'Status', 'View Agent'];
+    final columns = ['Agent Id', 'Email', 'Status', 'View Agent'];
     return DataTable(
       columns: getColumns(columns),
-      rows: getRows(userData)
+      rows: getRows(userData),
+      showBottomBorder: true,
+      headingRowColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 207, 222, 225)),
     );
   }
 
@@ -85,11 +75,13 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             // onSort: onSort,
           ))
       .toList();
+  
+  var index = 0;
 
   List<DataRow> getRows(List<AgentProjectMap> agents) => agents.map((AgentProjectMap user) {
         final cells = [user.agentId, user.agentEmail, user.agentStatus];
-        print(cells);
-        return DataRow(cells: getCells(cells, user.agentId));
+        index+=1;
+        return DataRow(selected: index % 2 == 0 ? true : false, cells: getCells(cells, user.agentId));
       }).toList();
 
   List<DataCell> getCells(List<dynamic> cells, String agentId) {
